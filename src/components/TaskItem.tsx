@@ -37,6 +37,7 @@ import {
   Trash,
   FolderInput,
 } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -94,6 +95,20 @@ export default function TaskItem({
 
   const menuItems = (
     <>
+      <ContextMenuItem onClick={() => onToggleSelection(task.id)}>
+        {isSelected ? (
+          <>
+            <LucideIcons.CheckSquare className="mr-2 h-4 w-4" />
+            Deselect
+          </>
+        ) : (
+          <>
+            <LucideIcons.Square className="mr-2 h-4 w-4" />
+            Select
+          </>
+        )}
+      </ContextMenuItem>
+      <ContextMenuSeparator />
       <ContextMenuItem onClick={() => setIsEditing(true)}>
         <Edit className="mr-2 h-4 w-4" />
         Edit
@@ -131,7 +146,7 @@ export default function TaskItem({
       <ContextMenuTrigger asChild>
         <div
           className={cn(
-            "group relative flex items-center gap-3 px-4 py-2 border-b transition-all duration-300",
+            "group relative flex items-center gap-3 px-4 py-2 border-b transition-all duration-300 cursor-pointer",
             isAnimating &&
               !task.completed &&
               "translate-x-full opacity-0 blur-sm",
@@ -141,21 +156,30 @@ export default function TaskItem({
             isSelected && "bg-accent/50",
             !isAnimating && "hover:bg-accent/30"
           )}
+          onClick={(e) => {
+            // Don't trigger selection if clicking on interactive elements
+            const target = e.target as HTMLElement;
+            if (
+              target.closest("button") ||
+              target.closest('[role="checkbox"]') ||
+              target.closest("[data-radix-collection-item]")
+            ) {
+              return;
+            }
+
+            if (e.shiftKey) {
+              e.preventDefault();
+              onRangeSelect(task.id);
+            } else if (e.ctrlKey || e.metaKey) {
+              e.preventDefault();
+              onToggleSelection(task.id);
+            }
+          }}
         >
-          {/* Selection Checkbox */}
-          <Checkbox
-            checked={isSelected}
-            onCheckedChange={() => onToggleSelection(task.id)}
-            className="shrink-0 opacity-0 group-hover:opacity-100 data-[state=checked]:opacity-100 transition-opacity"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (e.shiftKey) {
-                onRangeSelect(task.id);
-              } else {
-                onToggleSelection(task.id);
-              }
-            }}
-          />
+          {/* Visual Selection Indicator */}
+          {isSelected && (
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r" />
+          )}
 
           {/* Completion Checkbox */}
           <Checkbox
@@ -213,6 +237,20 @@ export default function TaskItem({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onToggleSelection(task.id)}>
+                {isSelected ? (
+                  <>
+                    <LucideIcons.CheckSquare className="mr-2 h-4 w-4" />
+                    Deselect
+                  </>
+                ) : (
+                  <>
+                    <LucideIcons.Square className="mr-2 h-4 w-4" />
+                    Select
+                  </>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setIsEditing(true)}>
                 <Edit className="mr-2 h-4 w-4" />
                 Edit

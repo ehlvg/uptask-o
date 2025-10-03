@@ -86,7 +86,7 @@ export default function AppMenuBar({
     <>
       <Menubar className="border-b rounded-none px-2 lg:px-4">
         <MenubarMenu>
-          <MenubarTrigger className="font-bold">UpTask</MenubarTrigger>
+          <MenubarTrigger className="font-bold">uptask</MenubarTrigger>
           <MenubarContent>
             <MenubarItem onClick={() => setShowUserDialog(true)}>
               <User className="mr-2 h-4 w-4" />

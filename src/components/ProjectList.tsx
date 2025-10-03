@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import * as LucideIcons from "lucide-react";
+import { Separator } from "./ui/separator";
 
 interface ProjectListProps {
   projects: Project[];
@@ -142,7 +143,7 @@ export default function ProjectList({
             >
               <IconComponent
                 iconName={project.icon}
-                className="h-4 w-4 shrink-0"
+                className="h-4 w-4 shrink-0 text-orange-500"
               />
               <span className="truncate">{project.name}</span>
             </Button>
@@ -204,6 +205,8 @@ export default function ProjectList({
       {projects.map((project) => (
         <ProjectMenuItem key={project.id} project={project} />
       ))}
+
+      <Separator className="my-2" />
 
       <Popover open={showAddProject} onOpenChange={setShowAddProject}>
         <PopoverTrigger asChild>
