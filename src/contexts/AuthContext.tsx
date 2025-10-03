@@ -57,11 +57,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // In a real app, you would validate credentials with your backend
       // For now, we'll create a user object if email/password are valid
       if (email && password.length >= 6) {
-        const userData: User = {
-          id: Date.now(),
-          email,
-          createdAt: new Date().toISOString(),
-        };
+        // Check if user already exists in localStorage
+        const existingUsersData = localStorage.getItem("users");
+        const existingUsers: Record<string, User> = existingUsersData
+          ? JSON.parse(existingUsersData)
+          : {};
+
+        let userData: User;
+
+        if (existingUsers[email]) {
+          // User exists, use existing user data
+          userData = existingUsers[email];
+        } else {
+          // New user, create new user data
+          userData = {
+            id: Date.now(),
+            email,
+            createdAt: new Date().toISOString(),
+          };
+
+          // Store in users registry
+          existingUsers[email] = userData;
+          localStorage.setItem("users", JSON.stringify(existingUsers));
+        }
 
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
@@ -91,12 +109,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // In a real app, you would create the account with your backend
       // For now, we'll create a user object if all fields are valid
       if (name && email && password.length >= 6) {
+        // Check if user already exists
+        const existingUsersData = localStorage.getItem("users");
+        const existingUsers: Record<string, User> = existingUsersData
+          ? JSON.parse(existingUsersData)
+          : {};
+
+        if (existingUsers[email]) {
+          // User already exists, you might want to return false or handle differently
+          console.error("User already exists");
+          return false;
+        }
+
         const userData: User = {
           id: Date.now(),
           name,
           email,
           createdAt: new Date().toISOString(),
         };
+
+        // Store in users registry
+        existingUsers[email] = userData;
+        localStorage.setItem("users", JSON.stringify(existingUsers));
 
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
