@@ -12,6 +12,9 @@ export function useTaskManager(userId: number | undefined) {
   const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(
     new Set()
   );
+  const [lastSelectedTaskId, setLastSelectedTaskId] = useState<string | null>(
+    null
+  );
 
   // Initialize data from localStorage
   useEffect(() => {
@@ -239,6 +242,13 @@ export function useTaskManager(userId: number | undefined) {
     [projects, tasks, selectedProjectId, saveProjects, saveTasks]
   );
 
+  // Get tasks for current project
+  const currentTasks = tasks.filter(
+    (task) => task.projectId === selectedProjectId
+  );
+  const activeTasks = currentTasks.filter((task) => !task.completed);
+  const completedTasks = currentTasks.filter((task) => task.completed);
+
   // Selection operations
   const toggleTaskSelection = useCallback((taskId: string) => {
     setSelectedTaskIds((prev) => {
@@ -250,18 +260,43 @@ export function useTaskManager(userId: number | undefined) {
       }
       return next;
     });
+    setLastSelectedTaskId(taskId);
   }, []);
+
+  const selectTaskRange = useCallback(
+    (taskId: string) => {
+      if (!lastSelectedTaskId) {
+        toggleTaskSelection(taskId);
+        return;
+      }
+
+      const taskIds = currentTasks.map((t) => t.id);
+      const startIndex = taskIds.indexOf(lastSelectedTaskId);
+      const endIndex = taskIds.indexOf(taskId);
+
+      if (startIndex === -1 || endIndex === -1) {
+        toggleTaskSelection(taskId);
+        return;
+      }
+
+      const [start, end] =
+        startIndex < endIndex ? [startIndex, endIndex] : [endIndex, startIndex];
+      const rangeIds = taskIds.slice(start, end + 1);
+
+      setSelectedTaskIds((prev) => {
+        const next = new Set(prev);
+        rangeIds.forEach((id) => next.add(id));
+        return next;
+      });
+      setLastSelectedTaskId(taskId);
+    },
+    [lastSelectedTaskId, currentTasks, toggleTaskSelection]
+  );
 
   const clearSelection = useCallback(() => {
     setSelectedTaskIds(new Set());
+    setLastSelectedTaskId(null);
   }, []);
-
-  // Get tasks for current project
-  const currentTasks = tasks.filter(
-    (task) => task.projectId === selectedProjectId
-  );
-  const activeTasks = currentTasks.filter((task) => !task.completed);
-  const completedTasks = currentTasks.filter((task) => task.completed);
 
   return {
     tasks,
@@ -282,6 +317,7 @@ export function useTaskManager(userId: number | undefined) {
     updateProject,
     deleteProject,
     toggleTaskSelection,
+    selectTaskRange,
     clearSelection,
   };
 }

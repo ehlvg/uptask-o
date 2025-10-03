@@ -49,6 +49,7 @@ interface TaskItemProps {
   onDelete: (taskId: string) => void;
   onMove: (taskId: string, projectId: string) => void;
   onToggleSelection: (taskId: string) => void;
+  onRangeSelect: (taskId: string) => void;
 }
 
 export default function TaskItem({
@@ -60,6 +61,7 @@ export default function TaskItem({
   onDelete,
   onMove,
   onToggleSelection,
+  onRangeSelect,
 }: TaskItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
@@ -125,177 +127,202 @@ export default function TaskItem({
   );
 
   return (
-    <div
-      className={cn(
-        "group relative flex items-center gap-3 px-4 py-2 border-b transition-all duration-300",
-        isAnimating && !task.completed && "translate-x-full opacity-0 blur-sm",
-        isAnimating && task.completed && "-translate-x-full opacity-0 blur-sm",
-        isSelected && "bg-accent/50",
-        !isAnimating && "hover:bg-accent/30"
-      )}
-      onClick={(e) => {
-        if (e.ctrlKey || e.metaKey) {
-          onToggleSelection(task.id);
-        }
-      }}
-    >
-      <Checkbox
-        checked={task.completed}
-        onCheckedChange={handleCheckboxChange}
-        className={cn(
-          "shrink-0 transition-all duration-200",
-          isAnimating && "scale-125"
-        )}
-      />
-
-      <div className="flex-1 min-w-0 flex items-center gap-2">
-        <span
-          className={cn(
-            "truncate text-sm",
-            task.completed && "line-through text-muted-foreground"
-          )}
-        >
-          {task.title}
-        </span>
-        {task.description && (
-          <span className="text-xs text-muted-foreground truncate max-w-[200px] hidden md:inline">
-            • {task.description}
-          </span>
-        )}
-      </div>
-
-      {task.dueDate && (
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
         <div
           className={cn(
-            "flex items-center gap-1 text-xs shrink-0",
-            new Date(task.dueDate) < new Date() && !task.completed
-              ? "text-destructive"
-              : "text-muted-foreground"
+            "group relative flex items-center gap-3 px-4 py-2 border-b transition-all duration-300",
+            isAnimating &&
+              !task.completed &&
+              "translate-x-full opacity-0 blur-sm",
+            isAnimating &&
+              task.completed &&
+              "-translate-x-full opacity-0 blur-sm",
+            isSelected && "bg-accent/50",
+            !isAnimating && "hover:bg-accent/30"
           )}
         >
-          <CalendarIcon className="h-3 w-3" />
-          <span className="hidden sm:inline">
-            {format(new Date(task.dueDate), "MMM d")}
-          </span>
-        </div>
-      )}
+          {/* Selection Checkbox */}
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={() => onToggleSelection(task.id)}
+            className="shrink-0 opacity-0 group-hover:opacity-100 data-[state=checked]:opacity-100 transition-opacity"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (e.shiftKey) {
+                onRangeSelect(task.id);
+              } else {
+                onToggleSelection(task.id);
+              }
+            }}
+          />
 
-      {/* Desktop: Context Menu */}
-      <ContextMenu>
-        <ContextMenuTrigger className="hidden md:block absolute inset-0" />
-        <ContextMenuContent>{menuItems}</ContextMenuContent>
-      </ContextMenu>
+          {/* Completion Checkbox */}
+          <Checkbox
+            checked={task.completed}
+            onCheckedChange={handleCheckboxChange}
+            className={cn(
+              "shrink-0 transition-all duration-200",
+              isAnimating && "scale-125"
+            )}
+            onClick={(e) => e.stopPropagation()}
+          />
 
-      {/* Mobile: Dropdown Menu */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild className="md:hidden">
-          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-            <MoreVertical className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setIsEditing(true)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Edit
-          </DropdownMenuItem>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <FolderInput className="mr-2 h-4 w-4" />
-              Move to Project
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              {projects.map((project) => (
-                <DropdownMenuItem
-                  key={project.id}
-                  onClick={() => onMove(task.id, project.id)}
-                  disabled={project.id === task.projectId}
-                >
-                  {project.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => onDelete(task.id)}
-            variant="destructive"
-          >
-            <Trash className="mr-2 h-4 w-4" />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            <span
+              className={cn(
+                "truncate text-sm",
+                task.completed && "line-through text-muted-foreground"
+              )}
+            >
+              {task.title}
+            </span>
+            {task.description && (
+              <span className="text-xs text-muted-foreground truncate max-w-[200px] hidden md:inline">
+                • {task.description}
+              </span>
+            )}
+          </div>
 
-      {/* Edit Popover */}
-      <Popover open={isEditing} onOpenChange={setIsEditing}>
-        <PopoverTrigger asChild>
-          <div className="hidden" />
-        </PopoverTrigger>
-        <PopoverContent className="w-80" align="start">
-          <div className="space-y-4">
-            <h4 className="font-medium">Edit Task</h4>
-            <div className="space-y-2">
-              <Label htmlFor="task-title">Title</Label>
-              <Input
-                id="task-title"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                placeholder="Task title"
-              />
+          {task.dueDate && (
+            <div
+              className={cn(
+                "flex items-center gap-1 text-xs shrink-0",
+                new Date(task.dueDate) < new Date() && !task.completed
+                  ? "text-destructive"
+                  : "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="h-3 w-3" />
+              <span className="hidden sm:inline">
+                {format(new Date(task.dueDate), "MMM d")}
+              </span>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="task-description">Description (optional)</Label>
-              <Input
-                id="task-description"
-                value={editDescription}
-                onChange={(e) => setEditDescription(e.target.value)}
-                placeholder="Add description"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Due Date (optional)</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {editDueDate ? format(editDueDate, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={editDueDate}
-                    onSelect={setEditDueDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={handleSaveEdit} className="flex-1">
-                Save
-              </Button>
+          )}
+
+          {/* Mobile & Desktop: Three-dot Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <Button
-                variant="outline"
-                onClick={() => {
-                  setIsEditing(false);
-                  setEditTitle(task.title);
-                  setEditDescription(task.description || "");
-                  setEditDueDate(
-                    task.dueDate ? new Date(task.dueDate) : undefined
-                  );
-                }}
-                className="flex-1"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => e.stopPropagation()}
               >
-                Cancel
+                <MoreVertical className="h-4 w-4" />
               </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <FolderInput className="mr-2 h-4 w-4" />
+                  Move to Project
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  {projects.map((project) => (
+                    <DropdownMenuItem
+                      key={project.id}
+                      onClick={() => onMove(task.id, project.id)}
+                      disabled={project.id === task.projectId}
+                    >
+                      {project.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => onDelete(task.id)}
+                variant="destructive"
+              >
+                <Trash className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </ContextMenuTrigger>
+      <ContextMenuContent>{menuItems}</ContextMenuContent>
+
+      {/* Edit Modal */}
+      {isEditing && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+          onClick={() => setIsEditing(false)}
+        >
+          <div
+            className="bg-popover text-popover-foreground w-full max-w-md rounded-md border p-4 shadow-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="space-y-4">
+              <h4 className="font-medium">Edit Task</h4>
+              <div className="space-y-2">
+                <Label htmlFor="task-title">Title</Label>
+                <Input
+                  id="task-title"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  placeholder="Task title"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="task-description">Description (optional)</Label>
+                <Input
+                  id="task-description"
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  placeholder="Add description"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Due Date (optional)</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start text-left"
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {editDueDate ? format(editDueDate, "PPP") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={editDueDate}
+                      onSelect={setEditDueDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={handleSaveEdit} className="flex-1">
+                  Save
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setEditTitle(task.title);
+                    setEditDescription(task.description || "");
+                    setEditDueDate(
+                      task.dueDate ? new Date(task.dueDate) : undefined
+                    );
+                  }}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           </div>
-        </PopoverContent>
-      </Popover>
-    </div>
+        </div>
+      )}
+    </ContextMenu>
   );
 }

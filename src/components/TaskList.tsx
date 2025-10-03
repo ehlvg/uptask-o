@@ -26,6 +26,7 @@ interface TaskListProps {
   onToggleCompletion: (taskId: string) => void;
   onMoveTask: (taskId: string, projectId: string) => void;
   onToggleSelection: (taskId: string) => void;
+  onRangeSelect: (taskId: string) => void;
 }
 
 export default function TaskList({
@@ -40,6 +41,7 @@ export default function TaskList({
   onToggleCompletion,
   onMoveTask,
   onToggleSelection,
+  onRangeSelect,
 }: TaskListProps) {
   const [showAddTask, setShowAddTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -99,6 +101,7 @@ export default function TaskList({
               onDelete={onDeleteTask}
               onMove={onMoveTask}
               onToggleSelection={onToggleSelection}
+              onRangeSelect={onRangeSelect}
             />
           ))}
         </div>
@@ -221,6 +224,7 @@ export default function TaskList({
                   onDelete={onDeleteTask}
                   onMove={onMoveTask}
                   onToggleSelection={onToggleSelection}
+                  onRangeSelect={onRangeSelect}
                 />
               ))}
             </div>

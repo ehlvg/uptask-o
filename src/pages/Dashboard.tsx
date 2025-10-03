@@ -31,6 +31,7 @@ export default function Dashboard() {
     updateProject,
     deleteProject,
     toggleTaskSelection,
+    selectTaskRange,
     clearSelection,
   } = useTaskManager(user?.id);
 
@@ -123,6 +124,7 @@ export default function Dashboard() {
               moveTasksToProject([taskId], projectId)
             }
             onToggleSelection={toggleTaskSelection}
+            onRangeSelect={selectTaskRange}
           />
         </main>
       </div>
