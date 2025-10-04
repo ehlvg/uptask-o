@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,8 +7,18 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/contexts/ThemeContext";
-import { Sun, Moon, Monitor } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  useTheme,
+  accentColors,
+  type AccentColor,
+} from "@/contexts/ThemeContext";
+import { Sun, Moon, Monitor, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SettingsDialogProps {
@@ -21,7 +30,7 @@ export default function SettingsDialog({
   open,
   onOpenChange,
 }: SettingsDialogProps) {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, accentColor, setAccentColor } = useTheme();
 
   const themeOptions = [
     {
@@ -42,6 +51,17 @@ export default function SettingsDialog({
       icon: Monitor,
       description: "Follow system theme",
     },
+  ];
+
+  const colorOptions: AccentColor[] = [
+    "default",
+    "purple",
+    "green",
+    "red",
+    "gold",
+    "blue",
+    "graphite",
+    "pink",
   ];
 
   return (
@@ -109,6 +129,58 @@ export default function SettingsDialog({
                 )}
               </p>
             </div>
+          </div>
+
+          {/* Accent Color Section */}
+          <div className="space-y-4">
+            <div>
+              <Label className="text-base font-semibold">Accent Color</Label>
+              <p className="text-sm text-muted-foreground mt-1">
+                Customize the primary color of your app
+              </p>
+            </div>
+
+            <TooltipProvider delayDuration={200}>
+              <div className="flex flex-wrap gap-3">
+                {colorOptions.map((color) => {
+                  const colorData = accentColors[color];
+                  const isSelected = accentColor === color;
+
+                  return (
+                    <Tooltip key={color}>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => setAccentColor(color)}
+                          className={cn(
+                            "relative w-8 h-8 rounded-3xl transition-all duration-200",
+                            "hover:scale-110 hover:shadow-lg",
+                            "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring",
+                            isSelected &&
+                              "ring-2 ring-offset-2 ring-ring scale-110"
+                          )}
+                          style={{
+                            backgroundColor: colorData.preview,
+                          }}
+                          aria-label={`Select ${colorData.name}`}
+                        >
+                          {isSelected && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <Check
+                                className="h-4 w-4 text-white drop-shadow-lg"
+                                strokeWidth={3}
+                              />
+                            </div>
+                          )}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{colorData.name}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+            </TooltipProvider>
           </div>
         </div>
       </DialogContent>

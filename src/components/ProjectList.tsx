@@ -143,7 +143,7 @@ export default function ProjectList({
             >
               <IconComponent
                 iconName={project.icon}
-                className="h-4 w-4 shrink-0 text-orange-500"
+                className="h-4 w-4 shrink-0 text-primary"
               />
               <span className="truncate">{project.name}</span>
             </Button>
