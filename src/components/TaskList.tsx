@@ -195,7 +195,7 @@ export default function TaskList({
 
       {/* Completed Tasks Section */}
       {completedTasks.length > 0 && (
-        <div className="border-t bg-muted/30">
+        <div className="border bg-muted/30 m-5 rounded-xl">
           <Button
             variant="ghost"
             className="w-full justify-start gap-2 px-4 py-3 h-auto"

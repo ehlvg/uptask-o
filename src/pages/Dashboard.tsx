@@ -113,7 +113,7 @@ export default function Dashboard() {
 
         {/* Mobile Sidebar */}
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-          <SheetContent side="left" className="p-0 w-64">
+          <SheetContent side="left" className="p-0 w-64 pt-8">
             <div className="p-4 border-b">
               <Button
                 variant={view === "dashboard" ? "default" : "ghost"}
@@ -153,7 +153,9 @@ export default function Dashboard() {
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
-                  <h1 className="text-xl md:text-2xl font-bold">Dashboard</h1>
+                  <h1 className="text-xl md:text-2xl font-bold md:min-h-[36px]">
+                    Dashboard
+                  </h1>
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -222,7 +224,7 @@ export default function Dashboard() {
                 >
                   <Menu className="h-5 w-5" />
                 </Button>
-                <h1 className="text-xl md:text-2xl font-bold truncate">
+                <h1 className="text-xl md:text-2xl font-bold truncate md:min-h-[36px]">
                   {currentProject?.name || "Loading..."}
                 </h1>
               </div>

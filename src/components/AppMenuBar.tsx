@@ -91,7 +91,7 @@ export default function AppMenuBar({
 
   return (
     <>
-      <Menubar className="border-b rounded-none px-2 lg:px-4">
+      <Menubar className="border-b rounded-none px-2 lg:px-4 menubar border-t-0">
         <MenubarMenu>
           <MenubarTrigger className="font-bold">uptask</MenubarTrigger>
           <MenubarContent>
