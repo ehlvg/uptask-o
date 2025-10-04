@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useTaskManager } from "@/hooks/useTaskManager";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import AppMenuBar from "@/components/AppMenuBar";
 import ProjectList from "@/components/ProjectList";
 import TaskList from "@/components/TaskList";
@@ -76,15 +76,6 @@ export default function Dashboard() {
 
         {/* Mobile Sidebar */}
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-          <SheetTrigger asChild className="md:hidden">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-14 left-2 z-50"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
           <SheetContent side="left" className="p-0 w-64">
             <ProjectList
               projects={projects}
@@ -103,8 +94,16 @@ export default function Dashboard() {
         {/* Main Content */}
         <main className="flex-1 flex flex-col overflow-hidden">
           {/* Project Header */}
-          <div className="border-b px-4 py-3 md:px-6 md:py-4">
-            <h1 className="text-xl md:text-2xl font-bold truncate ml-12 md:ml-0">
+          <div className="border-b px-4 py-3 md:px-6 md:py-4 flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden shrink-0"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+            <h1 className="text-xl md:text-2xl font-bold truncate">
               {currentProject?.name || "Loading..."}
             </h1>
           </div>

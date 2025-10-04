@@ -195,7 +195,7 @@ export default function TaskItem({
           <div className="flex-1 min-w-0 flex items-center gap-2">
             <span
               className={cn(
-                "truncate text-sm",
+                "truncate",
                 task.completed && "line-through text-muted-foreground"
               )}
             >
@@ -218,9 +218,7 @@ export default function TaskItem({
               )}
             >
               <CalendarIcon className="h-3 w-3" />
-              <span className="hidden sm:inline">
-                {format(new Date(task.dueDate), "MMM d")}
-              </span>
+              <span>{format(new Date(task.dueDate), "MMM d")}</span>
             </div>
           )}
 
@@ -230,7 +228,7 @@ export default function TaskItem({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="h-8 w-8 shrink-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                 onClick={(e) => e.stopPropagation()}
               >
                 <MoreVertical className="h-4 w-4" />
