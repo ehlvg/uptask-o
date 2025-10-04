@@ -117,4 +117,24 @@
     @apply bg-background text-foreground;
     font-size: 16px;
   }
+
+  /* Mobile-specific base sizes */
+  @media (max-width: 767px) {
+    html {
+      font-size: 17px;
+    }
+
+    body {
+      font-size: 17px;
+    }
+  }
+
+  /* Improve tap targets and readability on mobile */
+  @media (pointer: coarse) {
+    button,
+    a,
+    [role="button"] {
+      /* min-height: 44px; */
+    }
+  }
 }

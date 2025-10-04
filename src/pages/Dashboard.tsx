@@ -1,8 +1,16 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useTaskManager } from "@/hooks/useTaskManager";
 import { useDashboardSettings } from "@/hooks/useDashboardSettings";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +20,10 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import AppMenuBar from "@/components/AppMenuBar";
+import MobileTabBar from "@/components/MobileTabBar";
+import MobileSelectionSheet from "@/components/MobileSelectionSheet";
+import MobileSearchDialog from "@/components/MobileSearchDialog";
+import SettingsDialog from "@/components/SettingsDialog";
 import ProjectList from "@/components/ProjectList";
 import TaskList from "@/components/TaskList";
 import {
@@ -27,13 +39,21 @@ import {
   Eye,
   EyeOff,
   RotateCcw,
+  LogOut,
 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [view, setView] = useState<"dashboard" | "project">("dashboard");
+  const [showSearch, setShowSearch] = useState(false);
+  const [showUserDialog, setShowUserDialog] = useState(false);
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [showSelectionSheet, setShowSelectionSheet] = useState(false);
   const { widgets, toggleWidget, resetWidgets } = useDashboardSettings();
 
   const {
@@ -73,20 +93,31 @@ export default function Dashboard() {
     setSidebarOpen(false);
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   const currentProject = projects.find((p) => p.id === selectedProjectId);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      {/* Menu Bar */}
-      <AppMenuBar
-        selectedTaskIds={selectedTaskIds}
-        tasks={tasks}
-        projects={projects}
-        onMoveSelected={handleMoveSelected}
-        onDeleteSelected={handleDeleteSelected}
-        onClearSelection={clearSelection}
-        onSelectProject={handleSelectProject}
-      />
+      {/* Desktop Menu Bar */}
+      {!isMobile && (
+        <AppMenuBar
+          selectedTaskIds={selectedTaskIds}
+          tasks={tasks}
+          projects={projects}
+          onMoveSelected={handleMoveSelected}
+          onDeleteSelected={handleDeleteSelected}
+          onClearSelection={clearSelection}
+          onSelectProject={handleSelectProject}
+        />
+      )}
 
       <div className="flex-1 flex overflow-hidden">
         {/* Desktop Sidebar */}
@@ -113,17 +144,17 @@ export default function Dashboard() {
 
         {/* Mobile Sidebar */}
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-          <SheetContent side="left" className="p-0 w-64 pt-8">
-            <div className="p-4 border-b">
+          <SheetContent side="left" className="p-0 w-72 pt-8">
+            <div className="p-5 border-b">
               <Button
                 variant={view === "dashboard" ? "default" : "ghost"}
-                className="w-full justify-start"
+                className="w-full justify-start h-12 text-base"
                 onClick={() => {
                   setView("dashboard");
                   setSidebarOpen(false);
                 }}
               >
-                <LayoutDashboard className="mr-2 h-4 w-4" />
+                <LayoutDashboard className="mr-3 h-5 w-5" />
                 Dashboard
               </Button>
             </div>
@@ -139,28 +170,34 @@ export default function Dashboard() {
         </Sheet>
 
         {/* Main Content */}
-        <main className="flex-1 flex flex-col overflow-hidden">
+        <main
+          className={`flex-1 flex flex-col overflow-hidden ${
+            isMobile ? "pb-16" : ""
+          }`}
+        >
           {view === "dashboard" ? (
             <>
-              {/* Dashboard Header */}
-              <div className="border-b px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-3">
+              {/* Dashboard Header - Mobile: Fixed breadcrumb bar, Desktop: Static header */}
+              <div className="fixed md:static top-0 left-0 right-0 z-50 md:z-auto bg-background/95 md:bg-background backdrop-blur md:backdrop-blur-none supports-[backdrop-filter]:bg-background/80 md:supports-[backdrop-filter]:bg-background border-b px-5 py-4 md:px-6 md:py-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden shrink-0"
+                    className="md:hidden shrink-0 h-11 w-11"
                     onClick={() => setSidebarOpen(true)}
                   >
-                    <Menu className="h-5 w-5" />
+                    <Menu className="h-6 w-6" />
                   </Button>
-                  <h1 className="text-xl md:text-2xl font-bold md:min-h-[36px]">
-                    Dashboard
-                  </h1>
+                  <h1 className="text-2xl font-bold">Dashboard</h1>
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <Settings2 className="h-5 w-5" />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-11 w-11 md:h-10 md:w-10"
+                    >
+                      <Settings2 className="h-6 w-6 md:h-5 md:w-5" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
@@ -189,9 +226,9 @@ export default function Dashboard() {
               </div>
 
               {/* Dashboard Content */}
-              <div className="flex-1 overflow-y-auto">
-                <div className="p-4 md:p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              <div className="flex-1 overflow-y-auto pt-20 md:pt-0 pb-20 md:pb-0">
+                <div className="p-5 md:p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
                     {widgets.find((w) => w.id === "greeting")?.visible && (
                       <GreetingWidget userName={user?.name} />
                     )}
@@ -214,17 +251,17 @@ export default function Dashboard() {
             </>
           ) : (
             <>
-              {/* Project Header */}
-              <div className="border-b px-4 py-3 md:px-6 md:py-4 flex items-center gap-3">
+              {/* Project Header - Mobile: Fixed breadcrumb bar, Desktop: Static header */}
+              <div className="fixed md:static top-0 left-0 right-0 z-50 md:z-auto bg-background/95 md:bg-background backdrop-blur md:backdrop-blur-none supports-[backdrop-filter]:bg-background/80 md:supports-[backdrop-filter]:bg-background border-b px-5 py-4 md:px-6 md:py-4 flex items-center gap-3">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden shrink-0"
+                  className="md:hidden shrink-0 h-11 w-11"
                   onClick={() => setSidebarOpen(true)}
                 >
-                  <Menu className="h-5 w-5" />
+                  <Menu className="h-6 w-6" />
                 </Button>
-                <h1 className="text-xl md:text-2xl font-bold truncate md:min-h-[36px]">
+                <h1 className="text-2xl font-bold truncate">
                   {currentProject?.name || "Loading..."}
                 </h1>
               </div>
@@ -250,6 +287,100 @@ export default function Dashboard() {
           )}
         </main>
       </div>
+
+      {/* Mobile Tab Bar */}
+      {isMobile && (
+        <>
+          <MobileTabBar
+            currentView={view}
+            selectedTaskCount={selectedTaskIds.size}
+            onNavigateDashboard={() => setView("dashboard")}
+            onOpenSearch={() => setShowSearch(true)}
+            onOpenSelection={() => setShowSelectionSheet(true)}
+            onOpenSettings={() => setShowSettingsDialog(true)}
+            onOpenUser={() => setShowUserDialog(true)}
+          />
+
+          {/* Mobile Selection Sheet */}
+          <MobileSelectionSheet
+            open={showSelectionSheet}
+            onOpenChange={setShowSelectionSheet}
+            selectedCount={selectedTaskIds.size}
+            projects={projects}
+            onMoveSelected={handleMoveSelected}
+            onDeleteSelected={handleDeleteSelected}
+            onClearSelection={clearSelection}
+          />
+
+          {/* Mobile Search Dialog */}
+          <MobileSearchDialog
+            open={showSearch}
+            onOpenChange={setShowSearch}
+            tasks={tasks}
+            projects={projects}
+            onSelectProject={handleSelectProject}
+          />
+
+          {/* Mobile User Dialog */}
+          <Dialog open={showUserDialog} onOpenChange={setShowUserDialog}>
+            <DialogContent className="max-w-[90vw] w-full">
+              <DialogHeader>
+                <DialogTitle className="text-xl">Account</DialogTitle>
+                <DialogDescription>Your account details</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                {user?.avatarUrl && (
+                  <div className="flex justify-center">
+                    <img
+                      src={user.avatarUrl}
+                      alt={user.name || "User"}
+                      className="w-20 h-20 rounded-full"
+                    />
+                  </div>
+                )}
+                <div>
+                  <div className="text-sm font-medium text-muted-foreground">
+                    Name
+                  </div>
+                  <div className="text-lg">{user?.name || "Not provided"}</div>
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-muted-foreground">
+                    Email
+                  </div>
+                  <div className="text-lg">{user?.email}</div>
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-muted-foreground">
+                    Member since
+                  </div>
+                  <div className="text-lg">
+                    {user?.createdAt
+                      ? new Date(user.createdAt).toLocaleDateString()
+                      : "Unknown"}
+                  </div>
+                </div>
+                <div className="pt-4">
+                  <Button
+                    onClick={handleLogout}
+                    variant="outline"
+                    className="w-full h-12 text-base"
+                  >
+                    <LogOut className="mr-2 h-5 w-5" />
+                    Logout
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* Mobile Settings Dialog */}
+          <SettingsDialog
+            open={showSettingsDialog}
+            onOpenChange={setShowSettingsDialog}
+          />
+        </>
+      )}
     </div>
   );
 }

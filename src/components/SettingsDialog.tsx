@@ -66,9 +66,9 @@ export default function SettingsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="max-w-[90vw] w-full sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Settings</DialogTitle>
+          <DialogTitle className="text-xl">Settings</DialogTitle>
           <DialogDescription>
             Customize your application preferences
           </DialogDescription>
@@ -94,12 +94,12 @@ export default function SettingsDialog({
                     key={option.value}
                     variant={isSelected ? "default" : "outline"}
                     className={cn(
-                      "h-auto flex-col gap-2 py-4",
+                      "h-auto flex-col gap-2 py-5 md:py-4",
                       !isSelected && "hover:bg-accent"
                     )}
                     onClick={() => setTheme(option.value)}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-6 w-6 md:h-5 md:w-5" />
                     <span className="text-sm font-medium">{option.label}</span>
                   </Button>
                 );
@@ -152,7 +152,7 @@ export default function SettingsDialog({
                         <button
                           onClick={() => setAccentColor(color)}
                           className={cn(
-                            "relative w-8 h-8 rounded-3xl transition-all duration-200",
+                            "relative w-10 h-10 md:w-8 md:h-8 rounded-3xl transition-all duration-200",
                             "hover:scale-110 hover:shadow-lg",
                             "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring",
                             isSelected &&
@@ -166,7 +166,7 @@ export default function SettingsDialog({
                           {isSelected && (
                             <div className="absolute inset-0 flex items-center justify-center">
                               <Check
-                                className="h-4 w-4 text-white drop-shadow-lg"
+                                className="h-5 w-5 md:h-4 md:w-4 text-white drop-shadow-lg"
                                 strokeWidth={3}
                               />
                             </div>

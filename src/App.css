@@ -6,3 +6,24 @@ body {
 .menubar {
   padding-top: env(safe-area-inset-top);
 }
+
+/* Mobile-specific adjustments */
+@media (max-width: 767px) {
+  /* Larger touch targets for mobile */
+  button {
+    /* min-height: 44px; */
+  }
+
+  /* Increase input sizes */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    /* min-height: 44px; */
+  }
+
+  /* Better spacing for mobile */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+}

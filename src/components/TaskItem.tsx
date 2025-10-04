@@ -146,7 +146,7 @@ export default function TaskItem({
       <ContextMenuTrigger asChild>
         <div
           className={cn(
-            "group relative flex items-center gap-3 px-4 py-2 transition-all duration-300 cursor-pointer",
+            "group relative flex items-center gap-3 px-4 py-3 md:py-2 transition-all duration-300 cursor-pointer min-h-[60px] md:min-h-0",
             isAnimating &&
               !task.completed &&
               "translate-x-full opacity-0 blur-sm",
@@ -186,7 +186,7 @@ export default function TaskItem({
             checked={task.completed}
             onCheckedChange={handleCheckboxChange}
             className={cn(
-              "shrink-0 transition-all duration-200",
+              "shrink-0 transition-all duration-200 h-5 w-5 md:h-4 md:w-4",
               isAnimating && "scale-125"
             )}
             onClick={(e) => e.stopPropagation()}
@@ -195,14 +195,14 @@ export default function TaskItem({
           <div className="flex-1 min-w-0 flex items-center gap-2">
             <span
               className={cn(
-                "truncate",
+                "truncate text-base md:text-sm",
                 task.completed && "line-through text-muted-foreground"
               )}
             >
               {task.title}
             </span>
             {task.description && (
-              <span className="text-xs text-muted-foreground truncate max-w-[200px] hidden md:inline">
+              <span className="text-xs text-muted-foreground truncate max-w-[200px] truncate">
                 • {task.description}
               </span>
             )}
@@ -211,13 +211,13 @@ export default function TaskItem({
           {task.dueDate && (
             <div
               className={cn(
-                "flex items-center gap-1 text-xs shrink-0",
+                "flex items-center gap-1 text-sm md:text-xs shrink-0",
                 new Date(task.dueDate) < new Date() && !task.completed
                   ? "text-destructive"
                   : "text-muted-foreground"
               )}
             >
-              <CalendarIcon className="h-3 w-3" />
+              <CalendarIcon className="h-4 w-4 md:h-3 md:w-3" />
               <span>{format(new Date(task.dueDate), "MMM d")}</span>
             </div>
           )}
@@ -228,10 +228,10 @@ export default function TaskItem({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 shrink-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                className="h-10 w-10 md:h-8 md:w-8 shrink-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                 onClick={(e) => e.stopPropagation()}
               >
-                <MoreVertical className="h-4 w-4" />
+                <MoreVertical className="h-5 w-5 md:h-4 md:w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -337,7 +337,10 @@ export default function TaskItem({
                 </Popover>
               </div>
               <div className="flex gap-2">
-                <Button onClick={handleSaveEdit} className="flex-1">
+                <Button
+                  onClick={handleSaveEdit}
+                  className="flex-1 h-11 md:h-10 text-base md:text-sm"
+                >
                   Save
                 </Button>
                 <Button
@@ -350,7 +353,7 @@ export default function TaskItem({
                       task.dueDate ? new Date(task.dueDate) : undefined
                     );
                   }}
-                  className="flex-1"
+                  className="flex-1 h-11 md:h-10 text-base md:text-sm"
                 >
                   Cancel
                 </Button>

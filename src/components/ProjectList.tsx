@@ -155,12 +155,12 @@ export default function ProjectList({
         <div className="flex md:hidden items-center gap-1">
           <Button
             variant={selectedProjectId === project.id ? "secondary" : "ghost"}
-            className="flex-1 justify-start gap-3 px-3"
+            className="flex-1 justify-start gap-3 px-4 h-12 text-base"
             onClick={() => onSelectProject(project.id)}
           >
             <IconComponent
               iconName={project.icon}
-              className="h-4 w-4 shrink-0"
+              className="h-5 w-5 shrink-0"
             />
             <span className="truncate">{project.name}</span>
           </Button>
@@ -170,9 +170,9 @@ export default function ProjectList({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 shrink-0"
+                  className="h-11 w-11 shrink-0"
                 >
-                  <LucideIcons.MoreVertical className="h-4 w-4" />
+                  <LucideIcons.MoreVertical className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -197,8 +197,8 @@ export default function ProjectList({
   };
 
   return (
-    <div className="flex flex-col gap-1 p-2">
-      <div className="px-3 py-2 text-sm font-semibold text-muted-foreground">
+    <div className="flex flex-col gap-1 p-3 md:p-2">
+      <div className="px-4 md:px-3 py-2 text-base md:text-sm font-semibold text-muted-foreground">
         Projects
       </div>
 
@@ -212,9 +212,9 @@ export default function ProjectList({
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
-            className="w-full justify-start gap-2 px-3 mt-2"
+            className="w-full justify-start gap-3 px-4 md:px-3 mt-2 h-12 md:h-9 text-base md:text-sm"
           >
-            <LucideIcons.Plus className="h-4 w-4" />
+            <LucideIcons.Plus className="h-5 w-5 md:h-4 md:w-4" />
             Add Project
           </Button>
         </PopoverTrigger>
