@@ -185,7 +185,7 @@ export default function TaskList({
                   id="task-title"
                   value={newTaskTitle}
                   onChange={(e) => setNewTaskTitle(e.target.value)}
-                  placeholder={t("taskList.titlePlaceholder")}
+                  placeholder={t("taskList.titlePlaceholder") as string}
                   onKeyDown={(e) =>
                     e.key === "Enter" && !e.shiftKey && handleAddTask()
                   }
@@ -201,7 +201,7 @@ export default function TaskList({
                   id="task-description"
                   value={newTaskDescription}
                   onChange={(e) => setNewTaskDescription(e.target.value)}
-                  placeholder={t("taskList.descriptionPlaceholder")}
+                  placeholder={t("taskList.descriptionPlaceholder") as string}
                   className="h-11 md:h-10"
                 />
               </div>
