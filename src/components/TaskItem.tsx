@@ -304,7 +304,7 @@ export default function TaskItem({
                   id="task-title"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
-                  placeholder={t("taskList.titlePlaceholder")}
+                  placeholder={t("taskList.titlePlaceholder") as string}
                 />
               </div>
               <div className="space-y-2">
@@ -315,7 +315,7 @@ export default function TaskItem({
                   id="task-description"
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
-                  placeholder={t("taskList.descriptionPlaceholder")}
+                  placeholder={t("taskList.descriptionPlaceholder") as string}
                 />
               </div>
               <div className="space-y-2">
@@ -337,7 +337,7 @@ export default function TaskItem({
                       mode="single"
                       selected={editDueDate}
                       onSelect={setEditDueDate}
-                      initialFocus
+                      autoFocus
                     />
                   </PopoverContent>
                 </Popover>

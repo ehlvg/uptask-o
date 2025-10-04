@@ -52,6 +52,7 @@ const IconComponent = ({
   className?: string;
 }) => {
   const Icon =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (LucideIcons as any)[
       iconName
         .split("-")
@@ -229,7 +230,7 @@ export default function ProjectList({
                 id="project-name"
                 value={newProjectName}
                 onChange={(e) => setNewProjectName(e.target.value)}
-                placeholder={t("projects.namePlaceholder")}
+                placeholder={t("projects.namePlaceholder") as string}
                 onKeyDown={(e) => e.key === "Enter" && handleAddProject()}
               />
             </div>
@@ -288,7 +289,7 @@ export default function ProjectList({
                 id="edit-project-name"
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
-                placeholder={t("projects.namePlaceholder")}
+                placeholder={t("projects.namePlaceholder") as string}
                 onKeyDown={(e) => e.key === "Enter" && handleSaveEdit()}
               />
             </div>

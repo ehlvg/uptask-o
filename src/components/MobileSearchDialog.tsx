@@ -69,7 +69,7 @@ export default function MobileSearchDialog({
         </DialogHeader>
         <div className="space-y-4">
           <Input
-            placeholder={t("search.placeholder")}
+            placeholder={t("search.placeholder") as string}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="text-base h-12"

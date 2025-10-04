@@ -224,7 +224,7 @@ export default function AppMenuBar({
           </DialogHeader>
           <div className="space-y-4">
             <Input
-              placeholder={t("search.placeholder")}
+              placeholder={t("search.placeholder") as string}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               autoFocus
