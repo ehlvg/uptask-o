@@ -88,7 +88,7 @@ export function useTaskManager(userId: string | undefined) {
 
     // Subscribe to real-time changes for projects
     const projectsSubscription = supabase
-      .channel("projects-changes")
+      .channel(`projects-changes-${userId}`)
       .on(
         "postgres_changes",
         {
@@ -97,7 +97,8 @@ export function useTaskManager(userId: string | undefined) {
           table: "projects",
           filter: `user_id=eq.${userId}`,
         },
-        async (payload) => {
+        (payload) => {
+          console.log("Project change received:", payload.eventType, payload);
           if (payload.eventType === "INSERT") {
             setProjects((prev) => [...prev, mapDbProject(payload.new)]);
           } else if (payload.eventType === "UPDATE") {
@@ -107,15 +108,30 @@ export function useTaskManager(userId: string | undefined) {
               )
             );
           } else if (payload.eventType === "DELETE") {
-            setProjects((prev) => prev.filter((p) => p.id !== payload.old.id));
+            // payload.old contains the deleted row data
+            const deletedId = payload.old?.id;
+            if (deletedId) {
+              console.log("Deleting project with id:", deletedId);
+              setProjects((prev) => prev.filter((p) => p.id !== deletedId));
+            } else {
+              console.warn(
+                "DELETE event received but no id in payload.old:",
+                payload
+              );
+            }
           }
         }
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        console.log("Projects subscription status:", status);
+        if (err) {
+          console.error("Projects subscription error:", err);
+        }
+      });
 
     // Subscribe to real-time changes for tasks
     const tasksSubscription = supabase
-      .channel("tasks-changes")
+      .channel(`tasks-changes-${userId}`)
       .on(
         "postgres_changes",
         {
@@ -124,7 +140,8 @@ export function useTaskManager(userId: string | undefined) {
           table: "tasks",
           filter: `user_id=eq.${userId}`,
         },
-        async (payload) => {
+        (payload) => {
+          console.log("Task change received:", payload.eventType, payload);
           if (payload.eventType === "INSERT") {
             setTasks((prev) => [mapDbTask(payload.new), ...prev]);
           } else if (payload.eventType === "UPDATE") {
@@ -134,15 +151,31 @@ export function useTaskManager(userId: string | undefined) {
               )
             );
           } else if (payload.eventType === "DELETE") {
-            setTasks((prev) => prev.filter((t) => t.id !== payload.old.id));
+            // payload.old contains the deleted row data
+            const deletedId = payload.old?.id;
+            if (deletedId) {
+              console.log("Deleting task with id:", deletedId);
+              setTasks((prev) => prev.filter((t) => t.id !== deletedId));
+            } else {
+              console.warn(
+                "DELETE event received but no id in payload.old:",
+                payload
+              );
+            }
           }
         }
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        console.log("Tasks subscription status:", status);
+        if (err) {
+          console.error("Tasks subscription error:", err);
+        }
+      });
 
     return () => {
-      projectsSubscription.unsubscribe();
-      tasksSubscription.unsubscribe();
+      console.log("Unsubscribing from realtime channels");
+      supabase.removeChannel(projectsSubscription);
+      supabase.removeChannel(tasksSubscription);
     };
   }, [userId]);
 
