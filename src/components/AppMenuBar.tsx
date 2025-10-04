@@ -28,10 +28,12 @@ import {
   LogOut,
   CheckSquare,
   Square,
+  Settings,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import SettingsDialog from "./SettingsDialog";
 
 interface AppMenuBarProps {
   selectedTaskIds: Set<string>;
@@ -56,6 +58,7 @@ export default function AppMenuBar({
   const navigate = useNavigate();
   const [showUserDialog, setShowUserDialog] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleLogout = async () => {
@@ -95,6 +98,10 @@ export default function AppMenuBar({
             <MenubarItem onClick={() => setShowUserDialog(true)}>
               <User className="mr-2 h-4 w-4" />
               User Info
+            </MenubarItem>
+            <MenubarItem onClick={() => setShowSettings(true)}>
+              <Settings className="mr-2 h-4 w-4" />
+              Settings
             </MenubarItem>
             <MenubarSeparator />
             <MenubarItem onClick={handleLogout}>
@@ -314,6 +321,9 @@ export default function AppMenuBar({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Settings Dialog */}
+      <SettingsDialog open={showSettings} onOpenChange={setShowSettings} />
     </>
   );
 }
