@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useTaskManager } from "@/hooks/useTaskManager";
 import { useDashboardSettings } from "@/hooks/useDashboardSettings";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -46,6 +47,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -129,7 +131,7 @@ export default function Dashboard() {
               onClick={() => setView("dashboard")}
             >
               <LayoutDashboard className="mr-2 h-4 w-4" />
-              Dashboard
+              {t("dashboard.title")}
             </Button>
           </div>
           <ProjectList
@@ -155,7 +157,7 @@ export default function Dashboard() {
                 }}
               >
                 <LayoutDashboard className="mr-3 h-5 w-5" />
-                Dashboard
+                {t("dashboard.title")}
               </Button>
             </div>
             <ProjectList
@@ -188,7 +190,7 @@ export default function Dashboard() {
                   >
                     <Menu className="h-6 w-6" />
                   </Button>
-                  <h1 className="text-2xl font-bold">Dashboard</h1>
+                  <h1 className="text-2xl font-bold">{t("dashboard.title")}</h1>
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -201,7 +203,9 @@ export default function Dashboard() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>Widget Visibility</DropdownMenuLabel>
+                    <DropdownMenuLabel>
+                      {t("widgetSettings.title")}
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {widgets.map((widget) => (
                       <DropdownMenuItem
@@ -213,13 +217,13 @@ export default function Dashboard() {
                         ) : (
                           <EyeOff className="mr-2 h-4 w-4" />
                         )}
-                        {widget.name}
+                        {t(`widgetSettings.${widget.id}`)}
                       </DropdownMenuItem>
                     ))}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={resetWidgets}>
                       <RotateCcw className="mr-2 h-4 w-4" />
-                      Reset to Default
+                      {t("widgetSettings.resetToDefault")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -262,7 +266,7 @@ export default function Dashboard() {
                   <Menu className="h-6 w-6" />
                 </Button>
                 <h1 className="text-2xl font-bold truncate">
-                  {currentProject?.name || "Loading..."}
+                  {currentProject?.name || t("dashboard.loading")}
                 </h1>
               </div>
 
@@ -325,8 +329,12 @@ export default function Dashboard() {
           <Dialog open={showUserDialog} onOpenChange={setShowUserDialog}>
             <DialogContent className="max-w-[90vw] w-full">
               <DialogHeader>
-                <DialogTitle className="text-xl">Account</DialogTitle>
-                <DialogDescription>Your account details</DialogDescription>
+                <DialogTitle className="text-xl">
+                  {t("userDialog.account")}
+                </DialogTitle>
+                <DialogDescription>
+                  {t("userDialog.description")}
+                </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 {user?.avatarUrl && (
@@ -340,24 +348,26 @@ export default function Dashboard() {
                 )}
                 <div>
                   <div className="text-sm font-medium text-muted-foreground">
-                    Name
+                    {t("userDialog.name")}
                   </div>
-                  <div className="text-lg">{user?.name || "Not provided"}</div>
+                  <div className="text-lg">
+                    {user?.name || t("userDialog.notProvided")}
+                  </div>
                 </div>
                 <div>
                   <div className="text-sm font-medium text-muted-foreground">
-                    Email
+                    {t("userDialog.email")}
                   </div>
                   <div className="text-lg">{user?.email}</div>
                 </div>
                 <div>
                   <div className="text-sm font-medium text-muted-foreground">
-                    Member since
+                    {t("userDialog.memberSince")}
                   </div>
                   <div className="text-lg">
                     {user?.createdAt
                       ? new Date(user.createdAt).toLocaleDateString()
-                      : "Unknown"}
+                      : t("userDialog.unknown")}
                   </div>
                 </div>
                 <div className="pt-4">
@@ -367,7 +377,7 @@ export default function Dashboard() {
                     className="w-full h-12 text-base"
                   >
                     <LogOut className="mr-2 h-5 w-5" />
-                    Logout
+                    {t("menuBar.logout")}
                   </Button>
                 </div>
               </div>

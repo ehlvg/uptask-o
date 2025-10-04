@@ -9,6 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CheckSquare, Square, FolderInput } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import type { Task, Project } from "@/types/tasks";
 
@@ -27,6 +28,7 @@ export default function MobileSearchDialog({
   projects,
   onSelectProject,
 }: MobileSearchDialogProps) {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
 
   const searchResults = useMemo(() => {
@@ -62,12 +64,12 @@ export default function MobileSearchDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[90vw] w-full sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="text-xl">Search</DialogTitle>
-          <DialogDescription>Search for tasks and projects</DialogDescription>
+          <DialogTitle className="text-xl">{t("search.title")}</DialogTitle>
+          <DialogDescription>{t("search.description")}</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <Input
-            placeholder="Type to search..."
+            placeholder={t("search.placeholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="text-base h-12"
@@ -79,7 +81,7 @@ export default function MobileSearchDialog({
                 {searchResults.projects.length > 0 && (
                   <div>
                     <div className="text-sm font-semibold text-muted-foreground mb-3 px-2">
-                      Projects
+                      {t("search.projects")}
                     </div>
                     <div className="space-y-2">
                       {searchResults.projects.map((project) => (
@@ -100,7 +102,7 @@ export default function MobileSearchDialog({
                 {searchResults.tasks.length > 0 && (
                   <div>
                     <div className="text-sm font-semibold text-muted-foreground mb-3 px-2">
-                      Tasks
+                      {t("search.tasks")}
                     </div>
                     <div className="space-y-2">
                       {searchResults.tasks.map((task) => {
@@ -133,7 +135,8 @@ export default function MobileSearchDialog({
                               </span>
                             </div>
                             <div className="text-sm text-muted-foreground ml-8">
-                              in {project?.name || "Unknown"}
+                              {t("search.in")}{" "}
+                              {project?.name || t("userDialog.unknown")}
                             </div>
                           </Button>
                         );
@@ -145,7 +148,7 @@ export default function MobileSearchDialog({
                 {searchResults.projects.length === 0 &&
                   searchResults.tasks.length === 0 && (
                     <div className="text-center py-12 text-muted-foreground">
-                      No results found
+                      {t("search.noResults")}
                     </div>
                   )}
               </>
@@ -153,7 +156,7 @@ export default function MobileSearchDialog({
 
             {!searchQuery.trim() && (
               <div className="text-center py-12 text-muted-foreground">
-                Start typing to search...
+                {t("search.startTyping")}
               </div>
             )}
           </div>

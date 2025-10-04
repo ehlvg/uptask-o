@@ -1,5 +1,6 @@
 import { TabBar, TabBarItem, TabBarLabel } from "@/components/ui/tab-bar";
 import { Home, Search, Settings2, User, CheckSquare } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MobileTabBarProps {
   currentView: "dashboard" | "project";
@@ -20,6 +21,8 @@ export default function MobileTabBar({
   onOpenSettings,
   onOpenUser,
 }: MobileTabBarProps) {
+  const { t } = useLanguage();
+
   return (
     <TabBar>
       <TabBarItem
@@ -27,12 +30,12 @@ export default function MobileTabBar({
         onClick={onNavigateDashboard}
       >
         <Home className="h-6 w-6" />
-        <TabBarLabel>Home</TabBarLabel>
+        <TabBarLabel>{t("mobile.dashboard")}</TabBarLabel>
       </TabBarItem>
 
       <TabBarItem onClick={onOpenSearch}>
         <Search className="h-6 w-6" />
-        <TabBarLabel>Search</TabBarLabel>
+        <TabBarLabel>{t("mobile.search")}</TabBarLabel>
       </TabBarItem>
 
       {selectedTaskCount > 0 ? (
@@ -43,18 +46,18 @@ export default function MobileTabBar({
               {selectedTaskCount}
             </span>
           </div>
-          <TabBarLabel>Selected</TabBarLabel>
+          <TabBarLabel>{t("mobile.selection")}</TabBarLabel>
         </TabBarItem>
       ) : (
         <TabBarItem onClick={onOpenSettings}>
           <Settings2 className="h-6 w-6" />
-          <TabBarLabel>Settings</TabBarLabel>
+          <TabBarLabel>{t("mobile.settings")}</TabBarLabel>
         </TabBarItem>
       )}
 
       <TabBarItem onClick={onOpenUser}>
         <User className="h-6 w-6" />
-        <TabBarLabel>Account</TabBarLabel>
+        <TabBarLabel>{t("userDialog.account")}</TabBarLabel>
       </TabBarItem>
     </TabBar>
   );

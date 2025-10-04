@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Task, Project } from "@/types/tasks";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,6 +45,7 @@ export default function TaskList({
   onToggleSelection,
   onRangeSelect,
 }: TaskListProps) {
+  const { t } = useLanguage();
   const isMobile = useIsMobile();
   const [showAddTask, setShowAddTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -87,10 +89,10 @@ export default function TaskList({
             <div className="flex flex-col items-center justify-center p-12 text-center min-h-[300px]">
               <div className="text-muted-foreground mb-4">
                 <div className="text-6xl mb-4">✨</div>
-                <p className="text-lg font-medium">No active tasks</p>
-                <p className="text-sm mt-2">
-                  Click the Add button to create your first task
+                <p className="text-lg font-medium">
+                  {t("taskList.noActiveTasks")}
                 </p>
+                <p className="text-sm mt-2">{t("taskList.clickToAdd")}</p>
               </div>
             </div>
           )}
@@ -125,7 +127,7 @@ export default function TaskList({
                 <ChevronRight className="h-4 w-4" />
               )}
               <span className="font-medium">
-                Completed ({completedTasks.length})
+                {t("taskList.completed")} ({completedTasks.length})
               </span>
             </Button>
 
@@ -160,7 +162,7 @@ export default function TaskList({
               className="h-14 md:h-11 px-6 md:px-4 gap-2 shadow-lg hover:shadow-xl transition-shadow text-base md:text-sm font-semibold"
             >
               <Plus className="h-6 w-6 md:h-5 md:w-5" />
-              Add
+              {t("taskList.add")}
             </Button>
           </PopoverTrigger>
           <PopoverContent
@@ -170,14 +172,14 @@ export default function TaskList({
             sideOffset={isMobile ? 8 : 12}
           >
             <div className="space-y-4">
-              <h4 className="font-semibold text-lg">New Task</h4>
+              <h4 className="font-semibold text-lg">{t("taskList.newTask")}</h4>
               <div className="space-y-2">
-                <Label htmlFor="task-title">Title</Label>
+                <Label htmlFor="task-title">{t("taskList.title")}</Label>
                 <Input
                   id="task-title"
                   value={newTaskTitle}
                   onChange={(e) => setNewTaskTitle(e.target.value)}
-                  placeholder="Task title"
+                  placeholder={t("taskList.titlePlaceholder")}
                   onKeyDown={(e) =>
                     e.key === "Enter" && !e.shiftKey && handleAddTask()
                   }
@@ -186,17 +188,19 @@ export default function TaskList({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="task-description">Description (optional)</Label>
+                <Label htmlFor="task-description">
+                  {t("taskList.description")}
+                </Label>
                 <Input
                   id="task-description"
                   value={newTaskDescription}
                   onChange={(e) => setNewTaskDescription(e.target.value)}
-                  placeholder="Add description"
+                  placeholder={t("taskList.descriptionPlaceholder")}
                   className="h-11 md:h-10"
                 />
               </div>
               <div className="space-y-2">
-                <Label>Due Date (optional)</Label>
+                <Label>{t("taskList.dueDate")}</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -206,7 +210,7 @@ export default function TaskList({
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {newTaskDueDate
                         ? format(newTaskDueDate, "PPP")
-                        : "Pick a date"}
+                        : t("taskList.pickDate")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -224,7 +228,7 @@ export default function TaskList({
                   onClick={handleAddTask}
                   className="flex-1 h-11 md:h-10 text-base md:text-sm font-semibold"
                 >
-                  Add Task
+                  {t("taskList.addTask")}
                 </Button>
                 <Button
                   variant="outline"
@@ -236,7 +240,7 @@ export default function TaskList({
                   }}
                   className="flex-1 h-11 md:h-10 text-base md:text-sm"
                 >
-                  Cancel
+                  {t("taskList.cancel")}
                 </Button>
               </div>
             </div>

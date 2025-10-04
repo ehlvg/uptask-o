@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import type { Task, Project } from "@/types/tasks";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Card,
   CardHeader,
@@ -33,46 +34,31 @@ import {
 import { format, isPast, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 
-const GREETINGS = [
-  "let's get things done ✨",
-  "ready to conquer today?",
-  "time to make progress",
-  "keep building, keep growing",
-  "another day, another win",
-  "you've got this",
-  "let's build something great",
-  "stay focused, stay calm",
-  "progress over perfection",
-  "one task at a time",
-  "small steps, big results",
-  "stay consistent",
-  "make it happen",
-  "focus on what matters",
-  "keep the momentum going",
-  "be productive, stay calm",
-  "clarity leads to action",
-  "simple. focused. effective.",
-  "turn plans into reality",
-  "stay organized, stay ahead",
-];
-
 interface GreetingWidgetProps {
   userName?: string;
 }
 
 export function GreetingWidget({ userName }: GreetingWidgetProps) {
+  const { t, language } = useLanguage();
+
   const [greeting] = useState(() => {
     const savedGreeting = sessionStorage.getItem("dailyGreeting");
     const savedDate = sessionStorage.getItem("greetingDate");
+    const savedLang = sessionStorage.getItem("greetingLang");
     const today = new Date().toDateString();
 
-    if (savedGreeting && savedDate === today) {
+    if (savedGreeting && savedDate === today && savedLang === language) {
       return savedGreeting;
     }
 
-    const newGreeting = GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
+    const greetings = t("widgets.greeting.greetings");
+    const greetingsArray =
+      typeof greetings === "string" ? [greetings] : greetings;
+    const newGreeting =
+      greetingsArray[Math.floor(Math.random() * greetingsArray.length)];
     sessionStorage.setItem("dailyGreeting", newGreeting);
     sessionStorage.setItem("greetingDate", today);
+    sessionStorage.setItem("greetingLang", language);
     return newGreeting;
   });
 
@@ -82,7 +68,7 @@ export function GreetingWidget({ userName }: GreetingWidgetProps) {
         <div className="space-y-1">
           {userName && (
             <h2 className="text-2xl md:text-3xl font-bold">
-              hello, {userName.split(" ")[0]}
+              {t("widgets.greeting.hello")}, {userName.split(" ")[0]}
             </h2>
           )}
           <p className="text-muted-foreground text-base md:text-lg">
@@ -99,6 +85,7 @@ interface TaskStatsWidgetProps {
 }
 
 export function TaskStatsWidget({ tasks }: TaskStatsWidgetProps) {
+  const { t } = useLanguage();
   const stats = useMemo(() => {
     const completed = tasks.filter((t) => t.completed).length;
     const incomplete = tasks.filter((t) => !t.completed).length;
@@ -112,29 +99,31 @@ export function TaskStatsWidget({ tasks }: TaskStatsWidgetProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Task Overview</CardTitle>
-        <CardDescription>Your task statistics</CardDescription>
+        <CardTitle>{t("widgets.taskStats.title")}</CardTitle>
+        <CardDescription>{t("widgets.taskStats.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-5 w-5 text-green-500" />
-              <span className="text-sm">Completed</span>
+              <span className="text-sm">
+                {t("widgets.taskStats.completed")}
+              </span>
             </div>
             <span className="text-2xl font-bold">{stats.completed}</span>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Circle className="h-5 w-5 text-blue-500" />
-              <span className="text-sm">To Do</span>
+              <span className="text-sm">{t("widgets.taskStats.toDo")}</span>
             </div>
             <span className="text-2xl font-bold">{stats.incomplete}</span>
           </div>
           <div className="pt-2 border-t">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">
-                Completion Rate
+                {t("widgets.taskStats.completionRate")}
               </span>
               <span className="text-sm font-semibold">
                 {stats.completionRate}%
@@ -164,6 +153,7 @@ export function OverdueTasksWidget({
   projects,
   onSelectProject,
 }: OverdueTasksWidgetProps) {
+  const { t } = useLanguage();
   const [filterProjectId, setFilterProjectId] = useState<string | null>(null);
 
   const overdueTasks = useMemo(() => {
@@ -196,13 +186,15 @@ export function OverdueTasksWidget({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Overdue Tasks</CardTitle>
+        <CardTitle>{t("widgets.overdue.title")}</CardTitle>
         <CardDescription>
           {overdueTasks.length > 0
-            ? `${overdueTasks.length} task${
-                overdueTasks.length !== 1 ? "s" : ""
-              } need attention`
-            : "All caught up!"}
+            ? `${overdueTasks.length} ${
+                overdueTasks.length !== 1
+                  ? t("widgets.overdue.tasks")
+                  : t("widgets.overdue.task")
+              } ${t("widgets.overdue.needAttention")}`
+            : t("widgets.overdue.allCaughtUp")}
         </CardDescription>
         <CardAction>
           <DropdownMenu>
@@ -210,12 +202,12 @@ export function OverdueTasksWidget({
               <Button variant="ghost" size="sm">
                 {filterProjectId
                   ? getProjectName(filterProjectId)
-                  : "All Projects"}
+                  : t("widgets.overdue.allProjects")}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setFilterProjectId(null)}>
-                All Projects
+                {t("widgets.overdue.allProjects")}
               </DropdownMenuItem>
               {projects.map((project) => (
                 <DropdownMenuItem
@@ -233,7 +225,7 @@ export function OverdueTasksWidget({
         {overdueTasks.length === 0 ? (
           <div className="text-center py-6 text-muted-foreground">
             <CheckCircle2 className="h-12 w-12 mx-auto mb-2 text-green-500" />
-            <p>No overdue tasks!</p>
+            <p>{t("widgets.overdue.noOverdueTasks")}</p>
           </div>
         ) : (
           <div className="space-y-2 max-h-[300px] overflow-y-auto">
@@ -250,7 +242,7 @@ export function OverdueTasksWidget({
                     <span>{getProjectName(task.projectId)}</span>
                     <span>•</span>
                     <span>
-                      Due{" "}
+                      {t("widgets.overdue.due")}{" "}
                       {task.dueDate && format(parseISO(task.dueDate), "MMM d")}
                     </span>
                   </div>
@@ -271,6 +263,7 @@ interface WeatherData {
 }
 
 export function DateWeatherWidget() {
+  const { t } = useLanguage();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -458,7 +451,7 @@ export function DateWeatherWidget() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Today</CardTitle>
+        <CardTitle>{t("widgets.dateWeather.title")}</CardTitle>
         <CardDescription>
           {format(currentDate, "EEEE, MMMM d, yyyy")}
         </CardDescription>
@@ -468,10 +461,10 @@ export function DateWeatherWidget() {
           <div className="text-center py-4">
             <Button onClick={handleEnableWeather} variant="outline" size="sm">
               <Calendar className="mr-2 h-4 w-4" />
-              Enable Weather
+              {t("widgets.dateWeather.enableWeather")}
             </Button>
             <p className="text-xs text-muted-foreground mt-2">
-              Allow location access for weather
+              {t("widgets.dateWeather.allowLocation")}
             </p>
           </div>
         )}
@@ -479,7 +472,7 @@ export function DateWeatherWidget() {
         {locationPermission === "denied" && (
           <div className="text-center py-4 text-muted-foreground">
             <EyeOff className="h-8 w-8 mx-auto mb-2" />
-            <p className="text-sm">Location access denied</p>
+            <p className="text-sm">{t("widgets.dateWeather.locationDenied")}</p>
           </div>
         )}
 

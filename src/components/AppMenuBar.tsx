@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import type { Task, Project } from "@/types/tasks";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -55,6 +56,7 @@ export default function AppMenuBar({
   onSelectProject,
 }: AppMenuBarProps) {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [showUserDialog, setShowUserDialog] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -97,16 +99,16 @@ export default function AppMenuBar({
           <MenubarContent>
             <MenubarItem onClick={() => setShowUserDialog(true)}>
               <User className="mr-2 h-4 w-4" />
-              User Info
+              {t("menuBar.userInfo")}
             </MenubarItem>
             <MenubarItem onClick={() => setShowSettings(true)}>
               <Settings className="mr-2 h-4 w-4" />
-              Settings
+              {t("menuBar.settings")}
             </MenubarItem>
             <MenubarSeparator />
             <MenubarItem onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
-              Logout
+              {t("menuBar.logout")}
             </MenubarItem>
           </MenubarContent>
         </MenubarMenu>
@@ -115,13 +117,13 @@ export default function AppMenuBar({
           <MenubarMenu>
             <MenubarTrigger>
               <CheckSquare className="mr-2 h-4 w-4" />
-              {selectedTaskIds.size} Selected
+              {selectedTaskIds.size} {t("menuBar.selected")}
             </MenubarTrigger>
             <MenubarContent>
               <MenubarSub>
                 <MenubarSubTrigger>
                   <FolderInput className="mr-2 h-4 w-4" />
-                  Move to Project
+                  {t("menuBar.moveToProject")}
                 </MenubarSubTrigger>
                 <MenubarSubContent>
                   {projects.map((project) => (
@@ -140,11 +142,11 @@ export default function AppMenuBar({
                 className="text-destructive"
               >
                 <Trash className="mr-2 h-4 w-4" />
-                Delete Selected
+                {t("menuBar.deleteSelected")}
               </MenubarItem>
               <MenubarItem onClick={onClearSelection}>
                 <Square className="mr-2 h-4 w-4" />
-                Clear Selection
+                {t("menuBar.clearSelection")}
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
@@ -153,7 +155,7 @@ export default function AppMenuBar({
         <MenubarMenu>
           <MenubarTrigger onClick={() => setShowSearch(true)}>
             <Search className="mr-2 h-4 w-4" />
-            <span className="hidden sm:inline">Search</span>
+            <span className="hidden sm:inline">{t("menuBar.search")}</span>
           </MenubarTrigger>
         </MenubarMenu>
       </Menubar>
@@ -162,8 +164,8 @@ export default function AppMenuBar({
       <Dialog open={showUserDialog} onOpenChange={setShowUserDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>User Information</DialogTitle>
-            <DialogDescription>Your account details</DialogDescription>
+            <DialogTitle>{t("userDialog.title")}</DialogTitle>
+            <DialogDescription>{t("userDialog.description")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             {user?.avatarUrl && (
@@ -177,24 +179,26 @@ export default function AppMenuBar({
             )}
             <div>
               <div className="text-sm font-medium text-muted-foreground">
-                Name
+                {t("userDialog.name")}
               </div>
-              <div className="text-base">{user?.name || "Not provided"}</div>
+              <div className="text-base">
+                {user?.name || t("userDialog.notProvided")}
+              </div>
             </div>
             <div>
               <div className="text-sm font-medium text-muted-foreground">
-                Email
+                {t("userDialog.email")}
               </div>
               <div className="text-base">{user?.email}</div>
             </div>
             <div>
               <div className="text-sm font-medium text-muted-foreground">
-                Member since
+                {t("userDialog.memberSince")}
               </div>
               <div className="text-base">
                 {user?.createdAt
                   ? new Date(user.createdAt).toLocaleDateString()
-                  : "Unknown"}
+                  : t("userDialog.unknown")}
               </div>
             </div>
             <div className="pt-4">
@@ -204,7 +208,7 @@ export default function AppMenuBar({
                 className="w-full"
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                Logout
+                {t("menuBar.logout")}
               </Button>
             </div>
           </div>
@@ -215,12 +219,12 @@ export default function AppMenuBar({
       <Dialog open={showSearch} onOpenChange={setShowSearch}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Search</DialogTitle>
-            <DialogDescription>Search for tasks and projects</DialogDescription>
+            <DialogTitle>{t("search.title")}</DialogTitle>
+            <DialogDescription>{t("search.description")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <Input
-              placeholder="Type to search..."
+              placeholder={t("search.placeholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               autoFocus
@@ -233,7 +237,7 @@ export default function AppMenuBar({
                   {searchResults.projects.length > 0 && (
                     <div>
                       <div className="text-sm font-semibold text-muted-foreground mb-2 px-2">
-                        Projects
+                        {t("search.projects")}
                       </div>
                       <div className="space-y-1">
                         {searchResults.projects.map((project) => (
@@ -258,7 +262,7 @@ export default function AppMenuBar({
                   {searchResults.tasks.length > 0 && (
                     <div>
                       <div className="text-sm font-semibold text-muted-foreground mb-2 px-2">
-                        Tasks
+                        {t("search.tasks")}
                       </div>
                       <div className="space-y-1">
                         {searchResults.tasks.map((task) => {
@@ -294,7 +298,8 @@ export default function AppMenuBar({
                                 </span>
                               </div>
                               <div className="text-xs text-muted-foreground ml-6">
-                                in {project?.name || "Unknown"}
+                                {t("search.in")}{" "}
+                                {project?.name || t("userDialog.unknown")}
                               </div>
                             </Button>
                           );
@@ -306,7 +311,7 @@ export default function AppMenuBar({
                   {searchResults.projects.length === 0 &&
                     searchResults.tasks.length === 0 && (
                       <div className="text-center py-8 text-muted-foreground">
-                        No results found
+                        {t("search.noResults")}
                       </div>
                     )}
                 </>
@@ -314,7 +319,7 @@ export default function AppMenuBar({
 
               {!searchQuery.trim() && (
                 <div className="text-center py-8 text-muted-foreground">
-                  Start typing to search...
+                  {t("search.startTyping")}
                 </div>
               )}
             </div>

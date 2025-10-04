@@ -8,8 +8,10 @@ import {
   Shield,
   Zap,
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function WelcomePage() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       {/* Hero Section */}
@@ -27,12 +29,10 @@ export default function WelcomePage() {
           {/* Main Heading */}
           <div className="space-y-4">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-              uptask
+              {t("welcome.title")}
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl">
-              a calm and welcoming task manager.
-              <br />
-              for the real work.
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl whitespace-pre-line">
+              {t("welcome.subtitle")}
             </p>
           </div>
 
@@ -40,7 +40,7 @@ export default function WelcomePage() {
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <Button asChild size="lg" className="text-lg px-8">
               <Link to="/login">
-                get started
+                {t("welcome.getStarted")}
                 <Sparkles className="ml-2 h-5 w-5" />
               </Link>
             </Button>
@@ -56,7 +56,7 @@ export default function WelcomePage() {
                 rel="noopener noreferrer"
               >
                 <Github className="mr-2 h-5 w-5" />
-                view on github
+                {t("welcome.viewOnGithub")}
               </a>
             </Button>
           </div>
@@ -69,10 +69,11 @@ export default function WelcomePage() {
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <CheckCircle2 className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">simple task tracking</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {t("welcome.features.simpleTracking.title")}
+            </h3>
             <p className="text-muted-foreground text-sm">
-              create, complete, and manage tasks with descriptions and due
-              dates. no unnecessary complexity.
+              {t("welcome.features.simpleTracking.description")}
             </p>
           </div>
 
@@ -81,10 +82,11 @@ export default function WelcomePage() {
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <FolderKanban className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">project organization</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {t("welcome.features.projectOrganization.title")}
+            </h3>
             <p className="text-muted-foreground text-sm">
-              organize tasks into projects with custom icons. keep everything
-              structured and easy to find.
+              {t("welcome.features.projectOrganization.description")}
             </p>
           </div>
 
@@ -93,10 +95,11 @@ export default function WelcomePage() {
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <Zap className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">real-time sync</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {t("welcome.features.realTimeSync.title")}
+            </h3>
             <p className="text-muted-foreground text-sm">
-              changes sync automatically across all your devices. powered by
-              Supabase real-time updates.
+              {t("welcome.features.realTimeSync.description")}
             </p>
           </div>
 
@@ -105,10 +108,11 @@ export default function WelcomePage() {
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <Shield className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">private by default</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {t("welcome.features.privateByDefault.title")}
+            </h3>
             <p className="text-muted-foreground text-sm">
-              row-level security ensures your data stays yours. built with
-              privacy in mind from day one.
+              {t("welcome.features.privateByDefault.description")}
             </p>
           </div>
 
@@ -118,11 +122,10 @@ export default function WelcomePage() {
               <Github className="h-6 w-6 text-primary" />
             </div>
             <h3 className="text-lg font-semibold mb-2">
-              github authentication
+              {t("welcome.features.githubAuth.title")}
             </h3>
             <p className="text-muted-foreground text-sm">
-              secure sign-in with your GitHub account. no passwords to remember
-              or manage.
+              {t("welcome.features.githubAuth.description")}
             </p>
           </div>
 
@@ -131,18 +134,19 @@ export default function WelcomePage() {
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <Sparkles className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">beautiful design</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {t("welcome.features.beautifulDesign.title")}
+            </h3>
             <p className="text-muted-foreground text-sm">
-              modern, responsive UI with dark mode and customizable accent
-              colors. built with shadcn/ui.
+              {t("welcome.features.beautifulDesign.description")}
             </p>
           </div>
         </div>
 
         {/* Footer */}
         <div className="mt-20 md:mt-32 text-center text-sm text-muted-foreground">
-          <p>built with React, TypeScript, and Supabase</p>
-          <p className="mt-2">keep building ✨</p>
+          <p>{t("welcome.builtWith")}</p>
+          <p className="mt-2">{t("welcome.keepBuilding")}</p>
         </div>
       </div>
     </div>

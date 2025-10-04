@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Task, Project } from "@/types/tasks";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,6 +65,7 @@ export default function TaskItem({
   onToggleSelection,
   onRangeSelect,
 }: TaskItemProps) {
+  const { t } = useLanguage();
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const [editDescription, setEditDescription] = useState(
@@ -99,24 +101,24 @@ export default function TaskItem({
         {isSelected ? (
           <>
             <LucideIcons.CheckSquare className="mr-2 h-4 w-4" />
-            Deselect
+            {t("taskItem.deselect")}
           </>
         ) : (
           <>
             <LucideIcons.Square className="mr-2 h-4 w-4" />
-            Select
+            {t("taskItem.select")}
           </>
         )}
       </ContextMenuItem>
       <ContextMenuSeparator />
       <ContextMenuItem onClick={() => setIsEditing(true)}>
         <Edit className="mr-2 h-4 w-4" />
-        Edit
+        {t("taskItem.edit")}
       </ContextMenuItem>
       <ContextMenuSub>
         <ContextMenuSubTrigger>
           <FolderInput className="mr-2 h-4 w-4" />
-          Move to Project
+          {t("taskItem.moveToProject")}
         </ContextMenuSubTrigger>
         <ContextMenuSubContent>
           {projects.map((project) => (
@@ -136,7 +138,7 @@ export default function TaskItem({
         className="text-destructive"
       >
         <Trash className="mr-2 h-4 w-4" />
-        Delete
+        {t("taskItem.delete")}
       </ContextMenuItem>
     </>
   );
@@ -239,24 +241,24 @@ export default function TaskItem({
                 {isSelected ? (
                   <>
                     <LucideIcons.CheckSquare className="mr-2 h-4 w-4" />
-                    Deselect
+                    {t("taskItem.deselect")}
                   </>
                 ) : (
                   <>
                     <LucideIcons.Square className="mr-2 h-4 w-4" />
-                    Select
+                    {t("taskItem.select")}
                   </>
                 )}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setIsEditing(true)}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {t("taskItem.edit")}
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                   <FolderInput className="mr-2 h-4 w-4" />
-                  Move to Project
+                  {t("taskItem.moveToProject")}
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   {projects.map((project) => (
@@ -276,7 +278,7 @@ export default function TaskItem({
                 variant="destructive"
               >
                 <Trash className="mr-2 h-4 w-4" />
-                Delete
+                {t("taskItem.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -295,27 +297,29 @@ export default function TaskItem({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="space-y-4">
-              <h4 className="font-medium">Edit Task</h4>
+              <h4 className="font-medium">{t("taskItem.editTask")}</h4>
               <div className="space-y-2">
-                <Label htmlFor="task-title">Title</Label>
+                <Label htmlFor="task-title">{t("taskList.title")}</Label>
                 <Input
                   id="task-title"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
-                  placeholder="Task title"
+                  placeholder={t("taskList.titlePlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="task-description">Description (optional)</Label>
+                <Label htmlFor="task-description">
+                  {t("taskList.description")}
+                </Label>
                 <Input
                   id="task-description"
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
-                  placeholder="Add description"
+                  placeholder={t("taskList.descriptionPlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Due Date (optional)</Label>
+                <Label>{t("taskList.dueDate")}</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -323,7 +327,9 @@ export default function TaskItem({
                       className="w-full justify-start text-left"
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {editDueDate ? format(editDueDate, "PPP") : "Pick a date"}
+                      {editDueDate
+                        ? format(editDueDate, "PPP")
+                        : t("taskList.pickDate")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -341,7 +347,7 @@ export default function TaskItem({
                   onClick={handleSaveEdit}
                   className="flex-1 h-11 md:h-10 text-base md:text-sm"
                 >
-                  Save
+                  {t("taskItem.save")}
                 </Button>
                 <Button
                   variant="outline"
@@ -355,7 +361,7 @@ export default function TaskItem({
                   }}
                   className="flex-1 h-11 md:h-10 text-base md:text-sm"
                 >
-                  Cancel
+                  {t("taskList.cancel")}
                 </Button>
               </div>
             </div>

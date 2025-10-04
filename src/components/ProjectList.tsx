@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Project } from "@/types/tasks";
 import { ICONS } from "@/types/tasks";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -72,6 +73,7 @@ export default function ProjectList({
   onUpdateProject,
   onDeleteProject,
 }: ProjectListProps) {
+  const { t } = useLanguage();
   const [showAddProject, setShowAddProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
   const [newProjectIcon, setNewProjectIcon] = useState("folder");
@@ -114,7 +116,7 @@ export default function ProjectList({
       <>
         <ContextMenuItem onClick={() => handleEditProject(project)}>
           <LucideIcons.Edit className="mr-2 h-4 w-4" />
-          Rename
+          {t("projects.rename")}
         </ContextMenuItem>
         {!project.isDefault && (
           <>
@@ -124,7 +126,7 @@ export default function ProjectList({
               className="text-destructive"
             >
               <LucideIcons.Trash className="mr-2 h-4 w-4" />
-              Delete
+              {t("projects.delete")}
             </ContextMenuItem>
           </>
         )}
@@ -178,7 +180,7 @@ export default function ProjectList({
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => handleEditProject(project)}>
                   <LucideIcons.Edit className="mr-2 h-4 w-4" />
-                  Rename
+                  {t("projects.rename")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
@@ -186,7 +188,7 @@ export default function ProjectList({
                   variant="destructive"
                 >
                   <LucideIcons.Trash className="mr-2 h-4 w-4" />
-                  Delete
+                  {t("projects.delete")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -199,7 +201,7 @@ export default function ProjectList({
   return (
     <div className="flex flex-col gap-1 p-3 md:p-2">
       <div className="px-4 md:px-3 py-2 text-base md:text-sm font-semibold text-muted-foreground">
-        Projects
+        {t("projects.title")}
       </div>
 
       {projects.map((project) => (
@@ -215,24 +217,24 @@ export default function ProjectList({
             className="w-full justify-start gap-3 px-4 md:px-3 mt-2 h-12 md:h-9 text-base md:text-sm"
           >
             <LucideIcons.Plus className="h-5 w-5 md:h-4 md:w-4" />
-            Add Project
+            {t("projects.add")}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80" align="start">
           <div className="space-y-4">
-            <h4 className="font-medium">New Project</h4>
+            <h4 className="font-medium">{t("projects.newProject")}</h4>
             <div className="space-y-2">
-              <Label htmlFor="project-name">Name</Label>
+              <Label htmlFor="project-name">{t("projects.name")}</Label>
               <Input
                 id="project-name"
                 value={newProjectName}
                 onChange={(e) => setNewProjectName(e.target.value)}
-                placeholder="Project name"
+                placeholder={t("projects.namePlaceholder")}
                 onKeyDown={(e) => e.key === "Enter" && handleAddProject()}
               />
             </div>
             <div className="space-y-2">
-              <Label>Icon</Label>
+              <Label>{t("projects.icon")}</Label>
               <div className="grid grid-cols-6 gap-2">
                 {ICONS.map((icon) => (
                   <Button
@@ -251,7 +253,7 @@ export default function ProjectList({
             </div>
             <div className="flex gap-2">
               <Button onClick={handleAddProject} className="flex-1">
-                Add
+                {t("common.add")}
               </Button>
               <Button
                 variant="outline"
@@ -262,7 +264,7 @@ export default function ProjectList({
                 }}
                 className="flex-1"
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
             </div>
           </div>
@@ -279,19 +281,19 @@ export default function ProjectList({
         </PopoverTrigger>
         <PopoverContent className="w-80" align="start">
           <div className="space-y-4">
-            <h4 className="font-medium">Edit Project</h4>
+            <h4 className="font-medium">{t("projects.edit")}</h4>
             <div className="space-y-2">
-              <Label htmlFor="edit-project-name">Name</Label>
+              <Label htmlFor="edit-project-name">{t("projects.name")}</Label>
               <Input
                 id="edit-project-name"
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
-                placeholder="Project name"
+                placeholder={t("projects.namePlaceholder")}
                 onKeyDown={(e) => e.key === "Enter" && handleSaveEdit()}
               />
             </div>
             <div className="space-y-2">
-              <Label>Icon</Label>
+              <Label>{t("projects.icon")}</Label>
               <div className="grid grid-cols-6 gap-2">
                 {ICONS.map((icon) => (
                   <Button
@@ -308,14 +310,14 @@ export default function ProjectList({
             </div>
             <div className="flex gap-2">
               <Button onClick={handleSaveEdit} className="flex-1">
-                Save
+                {t("projects.save")}
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setEditingProject(null)}
                 className="flex-1"
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
             </div>
           </div>
@@ -329,10 +331,9 @@ export default function ProjectList({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Project</DialogTitle>
+            <DialogTitle>{t("projects.deleteProject")}</DialogTitle>
             <DialogDescription>
-              What would you like to do with the tasks in "
-              {deleteDialog?.project.name}"?
+              {t("projects.deleteQuestion")} "{deleteDialog?.project.name}"?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col sm:flex-row gap-2">
@@ -346,7 +347,7 @@ export default function ProjectList({
               }}
               className="w-full sm:w-auto"
             >
-              Keep Tasks in Inbox
+              {t("projects.keepTasksInInbox")}
             </Button>
             <Button
               variant="destructive"
@@ -358,7 +359,7 @@ export default function ProjectList({
               }}
               className="w-full sm:w-auto"
             >
-              Delete Tasks
+              {t("projects.deleteTasks")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Trash, FolderInput, X } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { Project } from "@/types/tasks";
 
 interface MobileSelectionSheetProps {
@@ -27,6 +28,8 @@ export default function MobileSelectionSheet({
   onDeleteSelected,
   onClearSelection,
 }: MobileSelectionSheetProps) {
+  const { t } = useLanguage();
+
   const handleMoveToProject = (projectId: string) => {
     onMoveSelected(projectId);
     onOpenChange(false);
@@ -50,7 +53,11 @@ export default function MobileSelectionSheet({
       >
         <SheetHeader>
           <SheetTitle className="text-lg">
-            {selectedCount} Task{selectedCount !== 1 ? "s" : ""} Selected
+            {selectedCount}{" "}
+            {selectedCount !== 1
+              ? t("widgets.overdue.tasks")
+              : t("widgets.overdue.task")}{" "}
+            {t("menuBar.selected")}
           </SheetTitle>
         </SheetHeader>
 
@@ -59,7 +66,7 @@ export default function MobileSelectionSheet({
           <div className="space-y-2">
             <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <FolderInput className="h-4 w-4" />
-              Move to Project
+              {t("menuBar.moveToProject")}
             </div>
             <div className="grid grid-cols-1 gap-2">
               {projects.map((project) => (
@@ -83,7 +90,7 @@ export default function MobileSelectionSheet({
               onClick={handleDelete}
             >
               <Trash className="mr-2 h-5 w-5" />
-              Delete Selected
+              {t("menuBar.deleteSelected")}
             </Button>
             <Button
               variant="outline"
@@ -91,7 +98,7 @@ export default function MobileSelectionSheet({
               onClick={handleClear}
             >
               <X className="mr-2 h-5 w-5" />
-              Clear Selection
+              {t("menuBar.clearSelection")}
             </Button>
           </div>
         </div>
