@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { DashboardWidget } from "@/components/DashboardWidgets";
 import { defaultWidgets } from "@/components/DashboardWidgets";
 
 const STORAGE_KEY = "uptask_dashboard_settings";
 
 export function useDashboardSettings() {
-  const [widgets, setWidgets] = useState<DashboardWidget[]>(defaultWidgets);
-
-  useEffect(() => {
+  const [widgets, setWidgets] = useState<DashboardWidget[]>(() => {
+    // Initialize state from localStorage on first render
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
@@ -19,14 +18,22 @@ export function useDashboardSettings() {
           );
           return savedWidget || defaultWidget;
         });
-        setWidgets(merged);
+        return merged;
       } catch (error) {
         console.error("Failed to parse dashboard settings:", error);
       }
     }
-  }, []);
+    return defaultWidgets;
+  });
+
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
+    // Skip saving on initial mount to avoid overwriting with defaults
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(widgets));
   }, [widgets]);
 
