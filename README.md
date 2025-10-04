@@ -52,7 +52,7 @@ uptask is built with modern, reliable technologies:
 
 ## quick start
 
-well, just go to [up-task.ru](up-task.ru) and start exploring!
+well, just go to [up-task.ru](https://up-task.ru) and start exploring!
 
 for detailed self-host setup instructions, database configuration, and deployment guides, see [**docs/SETUP.md**](docs/SETUP.md).
 
