@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import "./App.css";
 import WelcomePage from "./pages/WelcomePage";
 import AuthForm from "./components/AuthForm";
+import AuthCallback from "./pages/AuthCallback";
 import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -17,18 +18,11 @@ function App() {
             path="/login"
             element={
               <AuthGuard>
-                <AuthForm initialMode="login" />
+                <AuthForm />
               </AuthGuard>
             }
           />
-          <Route
-            path="/register"
-            element={
-              <AuthGuard>
-                <AuthForm initialMode="register" />
-              </AuthGuard>
-            }
-          />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route
             path="/dashboard"
             element={

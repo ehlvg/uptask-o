@@ -1,21 +1,23 @@
 export interface Task {
   id: string;
   title: string;
-  description?: string;
+  description?: string | null;
   completed: boolean;
-  dueDate?: string;
+  dueDate?: string | null;
   projectId: string;
   createdAt: string;
-  userId: number;
+  updatedAt: string;
+  userId: string;
 }
 
 export interface Project {
   id: string;
   name: string;
   icon: string;
-  userId: number;
+  userId: string;
   isDefault?: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 export const ICONS = [

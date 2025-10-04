@@ -58,9 +58,13 @@ export default function AppMenuBar({
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
   };
 
   const searchResults = useMemo(() => {
@@ -155,6 +159,15 @@ export default function AppMenuBar({
             <DialogDescription>Your account details</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
+            {user?.avatarUrl && (
+              <div className="flex justify-center">
+                <img
+                  src={user.avatarUrl}
+                  alt={user.name || "User"}
+                  className="w-20 h-20 rounded-full"
+                />
+              </div>
+            )}
             <div>
               <div className="text-sm font-medium text-muted-foreground">
                 Name
