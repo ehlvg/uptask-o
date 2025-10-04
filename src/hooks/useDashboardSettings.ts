@@ -1,8 +1,19 @@
 import { useState, useEffect, useRef } from "react";
-import type { DashboardWidget } from "@/components/DashboardWidgets";
-import { defaultWidgets } from "@/components/DashboardWidgets";
 
 const STORAGE_KEY = "uptask_dashboard_settings";
+
+export interface DashboardWidget {
+  id: string;
+  name: string;
+  visible: boolean;
+}
+
+export const defaultWidgets: DashboardWidget[] = [
+  { id: "greeting", name: "Greeting", visible: true },
+  { id: "stats", name: "Task Overview", visible: true },
+  { id: "overdue", name: "Overdue Tasks", visible: true },
+  { id: "dateWeather", name: "Date & Weather", visible: true },
+];
 
 export function useDashboardSettings() {
   const [widgets, setWidgets] = useState<DashboardWidget[]>(() => {

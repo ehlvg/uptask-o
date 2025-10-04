@@ -8,7 +8,6 @@ import {
   CardDescription,
   CardAction,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -28,8 +27,6 @@ import {
   Sun,
   CloudFog,
   Wind,
-  X,
-  Eye,
   EyeOff,
   Loader2,
 } from "lucide-react";
@@ -292,6 +289,51 @@ export function DateWeatherWidget() {
   }, []);
 
   useEffect(() => {
+    const fetchWeather = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const { latitude, longitude } = position.coords;
+
+            // Using Open-Meteo API (free, no API key required)
+            const response = await fetch(
+              `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=celsius`
+            );
+
+            if (!response.ok) throw new Error("Failed to fetch weather");
+
+            const data = await response.json();
+            const weatherData: WeatherData = {
+              temperature: Math.round(data.current.temperature_2m),
+              condition: getWeatherCondition(data.current.weather_code),
+              icon: getWeatherIcon(data.current.weather_code),
+            };
+
+            setWeather(weatherData);
+            setLocationPermission("granted");
+
+            // Cache the weather data
+            localStorage.setItem("weatherData", JSON.stringify(weatherData));
+            localStorage.setItem("weatherTimestamp", Date.now().toString());
+          } catch (err) {
+            setError("Failed to load weather");
+            console.error("Weather fetch error:", err);
+          } finally {
+            setIsLoading(false);
+          }
+        },
+        (err) => {
+          setError("Location access denied");
+          setLocationPermission("denied");
+          setIsLoading(false);
+          console.error("Geolocation error:", err);
+        }
+      );
+    };
+
     // Check if we have cached weather data
     const cachedWeather = localStorage.getItem("weatherData");
     const cachedTime = localStorage.getItem("weatherTimestamp");
@@ -311,7 +353,7 @@ export function DateWeatherWidget() {
       navigator.permissions
         ?.query({ name: "geolocation" })
         .then((result) => {
-          setLocationPermission(result.state as any);
+          setLocationPermission(result.state);
           if (result.state === "granted") {
             fetchWeather();
           }
@@ -323,7 +365,7 @@ export function DateWeatherWidget() {
     }
   }, []);
 
-  const fetchWeather = async () => {
+  const handleEnableWeather = () => {
     setIsLoading(true);
     setError(null);
 
@@ -424,7 +466,7 @@ export function DateWeatherWidget() {
       <CardContent>
         {locationPermission === "prompt" && (
           <div className="text-center py-4">
-            <Button onClick={fetchWeather} variant="outline" size="sm">
+            <Button onClick={handleEnableWeather} variant="outline" size="sm">
               <Calendar className="mr-2 h-4 w-4" />
               Enable Weather
             </Button>
@@ -470,16 +512,3 @@ export function DateWeatherWidget() {
     </Card>
   );
 }
-
-export interface DashboardWidget {
-  id: string;
-  name: string;
-  visible: boolean;
-}
-
-export const defaultWidgets: DashboardWidget[] = [
-  { id: "greeting", name: "Greeting", visible: true },
-  { id: "stats", name: "Task Statistics", visible: true },
-  { id: "overdue", name: "Overdue Tasks", visible: true },
-  { id: "dateWeather", name: "Date & Weather", visible: true },
-];
