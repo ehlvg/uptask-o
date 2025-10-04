@@ -15,7 +15,14 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<WelcomePage />} />
+            <Route
+              path="/"
+              element={
+                <AuthGuard>
+                  <WelcomePage />
+                </AuthGuard>
+              }
+            />
             <Route
               path="/login"
               element={
