@@ -68,7 +68,7 @@ because task management shouldn't be complicated. we built uptask with a few pri
 ## screenshots
 
 <p align="center">
-  <em>coming soon — see the live demo instead!</em>
+  <img src='public/screenshot.png' alt='screenshot of the app' >
 </p>
 
 ## contributing
