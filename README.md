@@ -1,160 +1,86 @@
-# uptask-o
+<p align="center">
+  <img src="public/favicon.svg" alt="uptask - keep building" width="50%">
+</p>
 
-A calm and welcoming task manager for real work.
+<h1 align="center">uptask</h1>
 
-## Features
+<p align="center">
+  <em>a calm and welcoming task manager. for the real work.</em>
+</p>
 
-- 🔐 **Secure Authentication** - GitHub OAuth integration via Supabase Auth
-- 📊 **Project Management** - Organize tasks into customizable projects with icons
-- ✅ **Task Tracking** - Create, complete, and manage tasks with descriptions and due dates
-- 🔄 **Real-time Sync** - Changes sync automatically across devices
-- 🎨 **Beautiful UI** - Modern, responsive design built with Tailwind CSS and shadcn/ui
-- 🔒 **Private by Default** - Row-level security ensures your data stays yours
-
-## Tech Stack
-
-- **Frontend**: React 19, TypeScript, Vite
-- **Backend**: Supabase (PostgreSQL + Auth + Real-time)
-- **Styling**: Tailwind CSS 4, shadcn/ui components
-- **Authentication**: Supabase Auth with GitHub OAuth
-- **Database**: PostgreSQL with Row Level Security (RLS)
-- **Type Safety**: Full TypeScript coverage with generated database types
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ and npm
-- A Supabase account
-- A GitHub OAuth App (for authentication)
-
-### Installation
-
-1. Clone the repository:
-
-```bash
-git clone <your-repo-url>
-cd uptask-o
-```
-
-2. Install dependencies:
-
-```bash
-npm install
-```
-
-3. Set up Supabase:
-
-   - Create a Supabase project
-   - Configure GitHub OAuth
-   - Run the database schema
-   - Copy your environment variables
-
-4. Create a `.env` file in the root directory:
-
-```env
-VITE_SUPABASE_URL=your-supabase-url
-VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
-```
-
-5. Start the development server:
-
-```bash
-npm run dev
-```
-
-6. Open your browser to `http://localhost:5173`
-
-## Project Structure
-
-```
-uptask-o/
-├── src/
-│   ├── components/          # React components
-│   │   ├── ui/             # shadcn/ui components
-│   │   ├── AuthForm.tsx    # GitHub sign-in form
-│   │   ├── AppMenuBar.tsx  # Top navigation
-│   │   ├── ProjectList.tsx # Sidebar projects
-│   │   └── TaskList.tsx    # Task display
-│   ├── contexts/           # React contexts
-│   │   └── AuthContext.tsx # Authentication state
-│   ├── hooks/              # Custom React hooks
-│   │   └── useTaskManager.ts # Task/project management
-│   ├── lib/                # Utilities
-│   │   ├── supabase.ts     # Supabase client
-│   │   ├── database.types.ts # Generated types
-│   │   └── utils.ts        # Helper functions
-│   ├── pages/              # Page components
-│   │   ├── WelcomePage.tsx # Landing page
-│   │   ├── AuthCallback.tsx # OAuth callback
-│   │   └── Dashboard.tsx   # Main app
-│   └── types/              # TypeScript types
-│       └── tasks.ts        # Task/project types
-└── .env.example            # Environment template
-```
-
-## Database Schema
-
-### Tables
-
-- **projects** - User projects with customizable names and icons
-- **tasks** - Tasks with title, description, completion status, and due dates
-
-### Security
-
-- Row Level Security (RLS) enabled on all tables
-- Users can only access their own data
-- Automatic user isolation at the database level
-
-### Real-time
-
-- Live updates across all connected clients
-- Changes sync automatically without refresh
-
-## Development
-
-### Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-
-### Code Style
-
-- TypeScript strict mode enabled
-- ESLint for code quality
-- Modern React patterns (hooks, context)
-- Functional components throughout
-
-## Deployment
-
-### Prerequisites
-
-1. Update GitHub OAuth App with production URLs
-2. Configure Supabase redirect URLs for production
-3. Set environment variables in your hosting platform
-
-### Build Command
-
-```bash
-npm run build
-```
-
-### Output Directory
-
-```
-dist/
-```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-MIT
+<p align="center">
+  <a href="https://github.com/ehlvg/uptask-o/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
+  </a>
+  <a href="#tech-stack">
+    <img src="https://img.shields.io/badge/React-19-blue" alt="React 19">
+  </a>
+  <a href="#tech-stack">
+    <img src="https://img.shields.io/badge/TypeScript-5.9-blue" alt="TypeScript">
+  </a>
+  <a href="#tech-stack">
+    <img src="https://img.shields.io/badge/Supabase-enabled-green" alt="Supabase">
+  </a>
+</p>
 
 ---
 
-Built with ❤️ using React, TypeScript, and Supabase
+## what is uptask?
+
+uptask is a task manager built for people who value simplicity and focus. no bloat, no distractions—just clean project organization, real-time sync, and a beautiful interface that adapts to your workflow.
+
+whether you're building something new or maintaining existing work, uptask keeps you organized without getting in your way.
+
+## features
+
+- ✨ **simple task tracking** — create, complete, and manage tasks with descriptions and due dates
+- 📁 **project organization** — organize tasks into projects with custom icons
+- ⚡ **real-time sync** — changes sync automatically across all your devices
+- 🔒 **private by default** — row-level security ensures your data stays yours
+- 🎨 **beautiful design** — modern, responsive UI with dark mode and customizable accent colors
+- 🔐 **github authentication** — secure sign-in with your github account
+
+## tech stack
+
+uptask is built with modern, reliable technologies:
+
+- **frontend** → React 19, TypeScript, Vite
+- **styling** → Tailwind CSS 4, shadcn/ui components
+- **backend** → Supabase (PostgreSQL + Auth + Real-time)
+- **authentication** → Supabase Auth with GitHub OAuth
+- **database** → PostgreSQL with Row Level Security (RLS)
+
+## quick start
+
+well, just go to [up-task.ru](up-task.ru) and start exploring!
+
+for detailed self-host setup instructions, database configuration, and deployment guides, see [**docs/SETUP.md**](docs/SETUP.md).
+
+## why uptask?
+
+because task management shouldn't be complicated. we built uptask with a few principles in mind:
+
+- **calm over chaos** — a peaceful interface that doesn't overwhelm
+- **focus over features** — only what you need, nothing you don't
+- **privacy over profit** — your data is yours, secured by design
+- **simplicity over complexity** — straightforward workflows that just work
+
+## screenshots
+
+<p align="center">
+  <em>coming soon — see the live demo instead!</em>
+</p>
+
+## contributing
+
+contributions are welcome! whether it's bug fixes, new features, or documentation improvements, we'd love your help.
+
+see [**docs/SETUP.md**](docs/SETUP.md) for development guidelines.
+
+## license
+
+MIT © [ehlvg](https://github.com/ehlvg)
+
+<p align="center">
+  <strong>keep building ✨</strong>
+</p>
