@@ -41,16 +41,21 @@ interface GreetingWidgetProps {
 export function GreetingWidget({ userName }: GreetingWidgetProps) {
   const { t, language } = useLanguage();
 
-  const [greeting] = useState(() => {
+  const [greeting, setGreeting] = useState(() => {
     const savedGreeting = sessionStorage.getItem("dailyGreeting");
     const savedDate = sessionStorage.getItem("greetingDate");
     const savedLang = sessionStorage.getItem("greetingLang");
     const today = new Date().toDateString();
 
+    // Check if we have valid cached data for today and current language
     if (savedGreeting && savedDate === today && savedLang === language) {
-      return savedGreeting;
+      // Validate that it's not a translation key
+      if (!savedGreeting.includes("widgets.greeting")) {
+        return savedGreeting;
+      }
     }
 
+    // Get the greetings array from translations
     const greetings = t("widgets.greeting.greetings");
     const greetingsArray =
       typeof greetings === "string" ? [greetings] : greetings;
@@ -61,6 +66,26 @@ export function GreetingWidget({ userName }: GreetingWidgetProps) {
     sessionStorage.setItem("greetingLang", language);
     return newGreeting;
   });
+
+  // Update greeting when language changes
+  useEffect(() => {
+    const savedLang = sessionStorage.getItem("greetingLang");
+    const savedDate = sessionStorage.getItem("greetingDate");
+    const today = new Date().toDateString();
+
+    // If language changed or it's a new day, generate new greeting
+    if (savedLang !== language || savedDate !== today) {
+      const greetings = t("widgets.greeting.greetings");
+      const greetingsArray =
+        typeof greetings === "string" ? [greetings] : greetings;
+      const newGreeting =
+        greetingsArray[Math.floor(Math.random() * greetingsArray.length)];
+      setGreeting(newGreeting);
+      sessionStorage.setItem("dailyGreeting", newGreeting);
+      sessionStorage.setItem("greetingDate", today);
+      sessionStorage.setItem("greetingLang", language);
+    }
+  }, [language, t]);
 
   return (
     <Card className="col-span-full">

@@ -6,7 +6,7 @@ type Language = "en" | "ru";
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string) => string | string[];
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
@@ -34,7 +34,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     setLanguageState(lang);
   };
 
-  const t = (key: string): string => {
+  const t = (key: string): string | string[] => {
     const keys = key.split(".");
     let value: unknown = translations[language];
 
@@ -47,7 +47,12 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       }
     }
 
-    return typeof value === "string" ? value : key;
+    // Return the value if it's a string or an array of strings
+    if (typeof value === "string" || Array.isArray(value)) {
+      return value as string | string[];
+    }
+
+    return key;
   };
 
   const value: LanguageContextType = {

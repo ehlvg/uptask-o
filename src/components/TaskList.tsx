@@ -12,7 +12,13 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Skeleton } from "@/components/ui/skeleton";
 import TaskItem from "./TaskItem";
-import { Plus, CalendarIcon, ChevronDown, ChevronRight } from "lucide-react";
+import {
+  Plus,
+  CalendarIcon,
+  ChevronDown,
+  ChevronRight,
+  Sparkles,
+} from "lucide-react";
 import { format } from "date-fns";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -88,7 +94,7 @@ export default function TaskList({
           {activeTasks.length === 0 && (
             <div className="flex flex-col items-center justify-center p-12 text-center min-h-[300px]">
               <div className="text-muted-foreground mb-4">
-                <div className="text-6xl mb-4">✨</div>
+                <Sparkles className="h-14 w-14 mb-4 mx-auto" />
                 <p className="text-lg font-medium">
                   {t("taskList.noActiveTasks")}
                 </p>
