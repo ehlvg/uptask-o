@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, HashRouter } from "react-router-dom";
 import "./App.css";
 import WelcomePage from "./pages/WelcomePage";
 import AuthForm from "./components/AuthForm";
@@ -15,7 +15,7 @@ function App() {
     <LanguageProvider>
       <ThemeProvider>
         <AuthProvider>
-          <BrowserRouter>
+          <HashRouter>
             <Routes>
               <Route
                 path="/"
@@ -44,7 +44,7 @@ function App() {
               />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-          </BrowserRouter>
+          </HashRouter>
         </AuthProvider>
       </ThemeProvider>
     </LanguageProvider>
